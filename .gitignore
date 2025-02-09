@@ -10,3 +10,5 @@ lookup.json
 
 # Should i include this?
 wow-api-classic
+
+__pycache__
