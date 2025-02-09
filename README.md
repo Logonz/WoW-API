@@ -9,7 +9,7 @@
 ```
 
 2. Generate data for missing functions
-https://warcraft.wiki.gg/wiki/World_of_Warcraft_API/Classic
+<https://warcraft.wiki.gg/wiki/World_of_Warcraft_API/Classic>
 
 Look at the list
 Vanilla & Cataclysm to find the missing functions such as "AbandonQuest" which is not under C_QuestLog
@@ -20,8 +20,8 @@ It will read the lookup.json file, if you add more functions you need to regener
 ```bash
   python Classic-API-Generator.py
 ```
-This will then run through the lookup.json file and generate the missing functions using OpenAI
 
+This will then run through the lookup.json file and generate the missing functions using OpenAI
 
 3. init_Clonerepos.sh
 
@@ -35,7 +35,6 @@ This will then run through the lookup.json file and generate the missing functio
   python WoWUI-generator.py --version Classic
 ```
 
-
 5. How to use
 
 Create a symlink to your World of Warcraft Addons folder
@@ -45,6 +44,7 @@ mklink /J "C:\Games\World of Warcraft\_classic_era_\Interface\AddOns\QuestLite\W
 ```
 
 Change the settings in VSCode to exclude the WoW-API folder
+
 ```json
   "files.exclude": {
     "**/WoW-API": true
