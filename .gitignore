@@ -1,0 +1,12 @@
+WoWUI
+WoWUI-*
+!WoWUI-*.py
+API
+API-*
+venv
+vscode-wow-api
+.env
+lookup.json
+
+# Should i include this?
+wow-api-classic

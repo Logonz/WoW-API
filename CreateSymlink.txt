@@ -1,0 +1,4 @@
+mklink /J "C:\Games\World of Warcraft\_classic_era_\Interface\AddOns\QuestLite\wow-api-libraries" "D:\Projekt\wow-api-libraries"
+
+
+mklink /J "C:\Games\World of Warcraft\_classic_era_\Interface\AddOns\QuestLite\WoW-API" "D:\Projekt\wow-api-libraries\API-Classic"

@@ -1,0 +1,27 @@
+{
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/bower_components": true,
+    "**/*.code-search": true,
+    "**/vscode-wow-api": true,
+    "**/wow-api-classic": true,
+    "**/BlizzardInterfaceCode": true,
+    "**/WoWUI": true,
+    "**/API": true,
+    "**/API-*": true,
+    "**/WoWUI-*": true,
+  },
+  "editor.insertSpaces": false,
+  "editor.tabSize": 2,
+  "Lua.workspace.ignoreDir": [
+    ".vscode",
+    "WoWUI",
+    "BlizzardInterfaceCode",
+    "WoWUI-*",
+    "API",
+    "API-*",
+    "API-Classic",
+    "Functions-*-AI",
+    "vscode-wow-api",
+  ]
+}
