@@ -3,7 +3,6 @@ import json
 import os
 import requests
 from dotenv import load_dotenv
-import threading
 from concurrent.futures import ThreadPoolExecutor
 from WikiGetData import GetData
 
