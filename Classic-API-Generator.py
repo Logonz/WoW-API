@@ -3,6 +3,8 @@ import json
 import os
 import requests
 from dotenv import load_dotenv
+import threading
+from concurrent.futures import ThreadPoolExecutor
 
 load_dotenv()
 
@@ -28,15 +30,14 @@ def write_file(content: str, filename: str) -> str:
   fileExists = os.path.isfile(filename)
   with open(filename, "a+") as f:  # Change "w+" to "a"
     if not fileExists:
-      f.write("---@meta\n\n")
-    else:
-      f.write("\n\n")
-    f.write(content)
+      f.write("---@meta\n")
+    f.write(content + "\n")
 
   return f"Content written to {filename}"
 
 
-def generate_output_with_tool(prompt: str) -> str:
+def generate_output_with_tool(url: str) -> str:
+  print("Fetching ", url)
   with open("LuaTypes.md", "r") as os:
     LuaTypesContent = os.read()
 
@@ -81,16 +82,20 @@ def generate_output_with_tool(prompt: str) -> str:
 
   1. You will get RAW HTML content your job is to convert it to Lua Type hints.
   2. Never include the 'API_' prefix in the function name.
-  3. Write a summary of the function in the first line.
-  4. If there are additional details about the function, focus only on the the most important parts and keep it SHORT.
-  5. Always respond with the function signature, if you are unsure add a comment on the first line '---! DRAFT - NEEDS REVIEW'
-  6. NEVER include anything more than the function signature. No fluff or extra responses.
+  4. Always include all the parameters and return types.
+  5. Write a summary of the function in the first line.
+  6. If there are additional details about the function, focus only on the the most important parts and keep it SHORT.
+  7. ALWAYS include the documentation link.
+  8. Always respond with the function signature, if you are unsure add a comment on the first line '---! DRAFT - NEEDS REVIEW'
+  9. NEVER include anything more than the function signature. No fluff or extra responses.
 """
+
+  content = GetHTMLContent(url)
 
   # Call GPT-4 with tool support (function calling)
   response = client.chat.completions.create(
     model=model,
-    messages=[{"role": "system", "content": system_prompt}, {"role": "user", "content": prompt}],
+    messages=[{"role": "system", "content": system_prompt}, {"role": "user", "content": content}],
     # tools=tools,
     # tool_choice="auto",  # let the model decide if it wants to call a tool
   )
@@ -117,6 +122,13 @@ def GetHTMLContent(url: str) -> str:
 
 # https://warcraft.wiki.gg/wiki/World_of_Warcraft_API/Classic
 # Get shit here, i just copy the tables.
+def generate_output_with_tool_thread(url: str, url_to_filename: dict, data: dict):
+  content = generate_output_with_tool(url)
+  content = content.replace("```lua", "")
+  content = content.replace("```", "")
+  data[url] = content
+
+
 def main():
   filedict = {}
 
@@ -145,11 +157,17 @@ def main():
     for url in urls:
       url_to_filename[url] = filename
 
-  for url in GetData():
-    print(f"Fetching {url}")
-    content = generate_output_with_tool(url)
-    content = content.replace("```lua", "")
-    content = content.replace("```", "")
+  data = {}
+  with ThreadPoolExecutor(max_workers=10) as executor:
+    futures = []
+    for url in GetData():
+      future = executor.submit(generate_output_with_tool_thread, url, url_to_filename, data)
+      futures.append(future)
+
+    for future in futures:
+      future.result()
+
+  for url, content in data.items():
     write_file(content, url_to_filename[url])
 
 

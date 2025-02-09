@@ -1,22 +1,26 @@
 ---@meta
 
-C_LootHistory = {}
-
----Retrieves information about a specific item in the loot history.
+---Returns item details for a loot event.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_C_LootHistory.GetItem)
----@param itemIndex number
----@return number itemID
----@return string playerGUID
----@return number rollType
----@return number roll
----@return boolean hidden
-function C_LootHistory.GetItem(itemIndex) end
-
----Get information about a player's role in the loot history. 
----[Documentation](https://warcraft.wiki.gg/wiki/API_C_LootHistory.GetPlayerInfo)
----@param lootHistoryID number
----@param playerIndex number
----@return string name
+---@param itemIdx number Loot history ID
+---@return number rollID
+---@return string itemLink
+---@return number numPlayers Total players eligible for item
+---@return boolean isDone
+---@return number winnerIdx
 ---@return boolean isMasterLoot
----@return number role
-function C_LootHistory.GetPlayerInfo(lootHistoryID, playerIndex) end
+function C_LootHistory.GetItem(itemIdx) end
+
+
+---Returns player details for a loot event.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_C_LootHistory.GetPlayerInfo)
+---@param itemIdx number
+---@param playerIdx number
+---@return string name
+---@return string class
+---@return number rollType 0 for pass, 1 for need, 2 for greed, 3 for disenchant
+---@return number roll
+---@return boolean isWinner
+---@return boolean isMe
+function C_LootHistory.GetPlayerInfo(itemIdx, playerIdx) end
+

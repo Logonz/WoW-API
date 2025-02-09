@@ -1,15 +1,14 @@
 ---@meta
 
-C_ChatInfo = {}
-
----Determines if a player can be reported for inappropriate behavior.
----@param playerName string
----@param reason string The reason for reporting
+---Determines if a player can be reported based on their location.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_C_ChatInfo.CanReportPlayer)
+---@param playerLocation PlayerLocationMixin
 ---@return boolean canReport
-function C_ChatInfo.CanReportPlayer(playerName, reason) end
+function C_ChatInfo.CanReportPlayer(playerLocation) end
 
 
 ---! DRAFT - NEEDS REVIEW
----Reports the current server lag. 
+---Reports server lag issues. 
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_C_ChatInfo.ReportServerLag)
 function C_ChatInfo.ReportServerLag() end
+

@@ -1,281 +1,285 @@
 ---@meta
 
----Cancels a tracked buff.
+---Cancels the current tracking buff, such as Find Minerals or Track Humanoids.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_CancelTrackingBuff)
----@param index number
-function CancelTrackingBuff(index) end
+function CancelTrackingBuff() end
 
----Returns information about the current spell being cast or channeled.
----[Documentation](https://warcraft.wiki.gg/wiki/API_CastingInfo)
----@return string? spellName
----@return string? subText
----@return string? text
----@return number? startTime
----@return number? endTime
----@return boolean? isTradeSkill
----@return string? castID
----@return boolean? notInterruptible
----@return string? spellID
-function CastingInfo() end
 
----Confirms the selection of a new key binding.  
+---Confirms the binding setting.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_ConfirmBinder)
 function ConfirmBinder() end
 
----Converts the player's group into a party.
+
+---Returns the player's currently casting spell.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_CastingInfo)
+---@return string name The name of the spell
+---@return string text The name to be displayed
+---@return number texture FileID of the spell texture
+---@return number startTime Specifies when casting began in milliseconds
+---@return number endTime Specifies when casting will end in milliseconds
+---@return boolean isTradeSkill Indicates if the spell is related to a trade skill
+---@return string castID Cast identifier, e.g., "Cast-3-4479-0-1318-2053-000014AD63"
+---@return boolean? notInterruptible Always nil
+---@return number spellID The spell's ID
+function CastingInfo() end
+
+
+---Converts the current party into a raid group. 
+---Usually converts immediately unless in certain conditions like PartySync, where user confirmation is needed due to potential consequences. 
+---[Documentation](https://warcraft.wiki.gg/wiki/API_C_PartyInfo.ConvertToRaid)
+function C_PartyInfo.ConvertToRaid() end
+
+
+---Converts a raid group with 5 or fewer members to a party. 
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_ConvertToParty)
 function ConvertToParty() end
 
 
----Converts the current party to a raid group.
----[Documentation](https://warcraft.wiki.gg/wiki/API_ConvertToRaid)
-function ConvertToRaid() end
-
-
----Determines if the cursor can be placed in a specified equipment slot.
+---Returns true if the item held by the cursor can be equipped in the specified inventory slot.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_CursorCanGoInSlot)
----@param slotIndex number
----@return boolean canGoInSlot
-function CursorCanGoInSlot(slotIndex) end
+---@param invSlot number @Inventory slot to query
+---@return boolean? fitsInSlot @True if the cursor item can go into the specified slot, nil otherwise.
+function CursorCanGoInSlot(invSlot) end
 
----Fills a table with class information including localized class names and file names.
+
+---Submits a user suggestion feedback.
+---Replaces the function `GMSubmitSuggestion`.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_C_UserFeedback.SubmitSuggestion)
+---@param suggestion string
+---@return boolean success
+function C_UserFeedback.SubmitSuggestion(suggestion) end
+
+
+---Submits a bug report to the user feedback system.
+---Replaces `GMSubmitBug`.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_C_UserFeedback.SubmitBug)
+---@param bugInfo string The description of the bug
+---@param suppressNotification? boolean Optional, whether to suppress notification; defaults to false
+---@return boolean success Returns true if the submission was successful
+function C_UserFeedback.SubmitBug(bugInfo, suppressNotification) end
+
+
+---Fills a table with localized male or female class names.
+---The function takes a table and optionally a boolean to specify if female class names should be used.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_FillLocalizedClassList)
----@param classTable table<string, string> Table to be filled with class information
----@param isFemale? boolean If true, returns the female versions of the class names
+---@param classTable table The table to be filled with data.
+---@param isFemale? boolean If true, fills the table with female class names.
+---@return table classTable The same table that was passed in.
 function FillLocalizedClassList(classTable, isFemale) end
 
----Allows players to submit a bug report.
----[Documentation](https://warcraft.wiki.gg/wiki/API_GMSubmitBug)
----@param bug string The description of the bug.
-function GMSubmitBug(bug) end
 
----! DRAFT - NEEDS REVIEW
----Submits a suggestion to the game masters.
----[Documentation](https://warcraft.wiki.gg/wiki/API_GMSubmitSuggestion)
----@param suggestion string The suggestion text
-function GMSubmitSuggestion(suggestion) end
-
----! DRAFT - NEEDS REVIEW
----Retrieve the player's armor penetration percentage.
----[Documentation](https://wowpedia.fandom.com/wiki/API_GetArmorPenetration)
----@return number armorPenetration
+---Returns the percentage of target's armor your physical attacks ignore due to armor penetration.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_GetArmorPenetration)
+---@return number armorPen Percent of armor ignored by your physical attacks.
 function GetArmorPenetration() end
 
----Returns the index of the screen resolution currently in use.
+
+---Returns the index of the current screen resolution. This index corresponds to one of the resolutions provided by GetScreenResolutions().
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_GetCurrentResolution)
----@return number resolutionIndex
+---@return number index The index of the current resolution
 function GetCurrentResolution() end
 
----Returns the current direction of the eclipse power.
----[Documentation](https://warcraft.wiki.gg/wiki/API_GetEclipseDirection)
----@return number|null direction
-function GetEclipseDirection() end
 
----Returns the player's expertise percentage.
----[Documentation](https://wowpedia.fandom.com/wiki/API_GetExpertisePercent)
----@return number offhandPercent
----@return number mainhandPercent
+---Returns your current expertise reduction to chance to be dodged or parried, in percent.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_GetExpertisePercent)
+---@return number expertisePercent Percentage reduction in dodge and parry chances for swings with your main hand weapon.
+---@return number offhandExpertisePercent Percentage reduction in dodge and parry chances for swings with your offhand weapon.
 function GetExpertisePercent() end
 
----Retrieves referral information associated with a group or event invitation.
----! DRAFT - NEEDS REVIEW
----[Documentation](https://warcraft.wiki.gg/wiki/API_GetInviteReferralInfo)
----@param inviteID number
----@return string name
----@return number level
----@return string class
----@return string area
----@return string gender
-function GetInviteReferralInfo(inviteID) end
 
----Returns a list of available screen resolutions.
+---Indicates which Eclipse state the player is moving towards.
+---@return '"moon"'|'"sun"'|'"none"' direction Which Eclipse state the player is moving towards.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_GetEclipseDirection)
+function GetEclipseDirection() end
+
+
+---Returns info for Quick join invites.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_C_PartyInfo.GetInviteReferralInfo)
+---@param inviteGUID string
+---@return string outReferredByGuid
+---@return string outReferredByName
+---@return Enum.PartyRequestJoinRelation outRelationType
+---@return boolean outIsQuickJoin
+---@return string outClubId
+function C_PartyInfo.GetInviteReferralInfo(inviteGUID) end
+
+
+---Returns a list of available preset windowed screen resolutions.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_GetScreenResolutions)
----@return string[] resolutions
+---@return string resolutionN An available screen resolution as ___x___ (width "x" height).
 function GetScreenResolutions() end
 
----Invites a player to the group by name or target.
----[Documentation](https://warcraft.wiki.gg/wiki/API_InviteUnit)
----@param name string
----@param reason? string
-function InviteUnit(name, reason) end
 
----Returns whether the player is currently auto-attacking a target.
+---Invites a player to join your party.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_InviteUnit)
+---@param playerName string The name of the player you would like to invite to a group.
+function InviteUnit(playerName) end
+
+
+---Returns if the player is melee attacking the specified unit.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_IsPlayerAttacking)
----@return boolean isAutoAttacking
-function IsPlayerAttacking() end
+---@param unit string The UnitId of the unit to check.
+---@return boolean isAttacking If the player is attacking the specified unit.
+function IsPlayerAttacking(unit) end
+
 
 ---Leaves the current party.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_LeaveParty)
 function LeaveParty() end
 
----Requests to invite the specified unit to a group.
----[Documentation](https://warcraft.wiki.gg/wiki/API_RequestInviteFromUnit)
----@param unit string
-function RequestInviteFromUnit(unit) end
 
----Sets the screen resolution to the specified width and height.
+---Attempts to request an invite into the target party.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_RequestInviteFromUnit)
+---@param targetName string
+function RequestInviteFromUnit(targetName) end
+
+
+---Sets the screen resolution to the specified index.
+---Passing nil defaults to the lowest resolution available.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_SetScreenResolution)
----@param width number The desired screen width
----@param height number The desired screen height
-function SetScreenResolution(width, height) end
+---@param index number? Specifies the new screen resolution as the index of a value from GetScreenResolutions().
+function SetScreenResolution(index) end
 
 ---! DRAFT - NEEDS REVIEW
----Determines if the player's user interface should display health for a given unit.
----[Documentation](https://warcraft.wiki.gg/wiki/API_ShouldKnowUnitHealth)
----@param unitToken string
----@return boolean shouldKnow
-function ShouldKnowUnitHealth(unitToken) end
+---Checks if the unit health is known. 
+---[Documentation Unavailable]
+---@param unit string
+---@return boolean isKnown
+function ShouldKnowUnitHealth(unit) end
+---! DRAFT - NEEDS REVIEW  
+---The function ShowHelm likely controls the visibility of the player's helm in the game.  
+---[Documentation](https://warcraft.wiki.gg/wiki/API_ShowHelm)  
+---@param show boolean Indicates whether the helm should be shown or not  
+function ShowHelm(show) end
 
----Toggles the display of the player's cloak.
+---! DRAFT - NEEDS REVIEW
+---Toggles the visibility of the player's cloak.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_ShowCloak)
 ---@param show boolean
 function ShowCloak(show) end
 
----Sets whether to display the player's helm.
----[Documentation](https://warcraft.wiki.gg/wiki/API_ShowHelm)
----@param show boolean
-function ShowHelm(show) end
-
 ---! DRAFT - NEEDS REVIEW
----Checks if the player's cloak is currently displayed.
+---This function displays or hides the character's helm in World of Warcraft.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_ShowingHelm)
+---@param toggle boolean Determines whether to show or hide the helm
+---@return boolean success Indicates if the operation was successful
+function ShowingHelm(toggle) end
+---! DRAFT - NEEDS REVIEW
+---Returns information if the cloak is being shown for a player.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_ShowingCloak)
----@return boolean isShowing
-function ShowingCloak() end
-
----Toggles the visibility of the player's helm.
----[Documentation](https://warcraft.wiki.gg/wiki/API_ShowHelm)
----@param show boolean Indicates whether the helm should be shown (true) or hidden (false).
-function ShowHelm(show) end
-
----Returns the attack speed and damage factor for both hands of a unit. 
+---@param unit string The unit identifier (e.g., player or target).
+---@return boolean isShowing true if the cloak is shown, false otherwise.
+function ShowingCloak(unit) end
+---! DRAFT - NEEDS REVIEW
+---Performs an attack with both hands of a unit, but further details are not provided.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_UnitAttackBothHands)
----@param unit string
----@return number speed
----@return number offhandSpeed
----@return number damageLow
----@return number damageHigh
----@return number offhandLow
----@return number offhandHigh
----@return number posBuff
----@return number negBuff
----@return number percent
+---@param unit string The unit to attack with both hands.
+---@return boolean success True if the attack was successful, false otherwise.
 function UnitAttackBothHands(unit) end
-
-
----Needs summary.
----[Documentation](https://warcraft.wiki.gg/wiki/API_UnitAura)
----@param unit string
----@param index number
----@param filter string
----@return string name
----@return number icon
----@return number count
----@return string dispelType
----@return number duration
----@return number expirationTime
----@return string unitCaster
----@return boolean isStealable
----@return boolean nameplateShowPersonal
----@return boolean spellId
----@return boolean canApplyAura
----@return boolean isBossDebuff
----@return boolean castByPlayer
----@return boolean nameplateShowAll
----@return boolean timeMod
-function UnitAura(unit, index, filter) end
-
-
----Returns information about the buffs on a specific unit.
----Only returns buffs that the player can detect.
----@param unit string
----@param index number
----@param filter string
----@return string? name
----@return integer? icon
----@return integer? count
----@return integer? debuffType
----@return integer? duration
----@return integer? expirationTime
----@return string? source
----@return integer? isStealable
----@return integer? nameplateShowPersonal
----@return integer? spellId
----@return boolean? canApplyAura
----@return boolean? isBossDebuff
----@return boolean? castByPlayer
----@return boolean? nameplateShowAll
----@return boolean? timeMod
----@return integer? value1
----@return integer? value2
----@return integer? value3
-function UnitBuff(unit, index, filter) end
-
----Returns the total number of character points spent, used, and available.
+---! DRAFT - NEEDS REVIEW
+---Representation of unit character points.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_UnitCharacterPoints)
 ---@param unit string
----@return number numPointsSpent
----@return number numPointsUsed
----@return number numPointsAvailable
+---@return number total
+---@return number spent
+---@return number available
 function UnitCharacterPoints(unit) end
+---! DRAFT - NEEDS REVIEW
+---Determines if a unit is currently in a different phase.
+---[Documentation Unavailable](https://warcraft.wiki.gg/wiki/API_UnitInPhase)
+---@param unit string
+---@return boolean inPhase
+function UnitInPhase(unit) end
 
----Provides detailed information about a specific debuff on a unit.
----@param unitId string
----@param index number
----@param filter string
+---! DRAFT - NEEDS REVIEW
+---Checks if a unit is a civilian. 
+---[Documentation](https://warcraft.wiki.gg/wiki/API_UnitIsCivilian)
+---@param unit string
+---@return boolean isCivilian
+function UnitIsCivilian(unit) end
+
+---! DRAFT - NEEDS REVIEW
+---Retrieves the defense stats of a specified unit.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_UnitDefense)
+---@param unit string The target unit to query defense stats from
+---@return number defenseValue The total defense value of the unit
+---@return number effectiveArmor The effective armor value contributing to defense
+---@return number baseValue The base defense value of the unit
+---@return number bonusValue The bonus defense value of the unit
+function UnitDefense(unit) end
+---! DRAFT - NEEDS REVIEW
+---Provides details about a unit's debuff.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_UnitDebuff)
+---@param unit string The unit's ID
+---@param index number The index of the debuff
+---@param filter string? (optional) A filter to apply to the debuff list
 ---@return string name
 ---@return string icon
 ---@return number count
 ---@return string debuffType
 ---@return number duration
 ---@return number expirationTime
----@return string unitCaster
----@return boolean canStealOrPurge
+---@return string sourceUnit
+---@return boolean isStealable
 ---@return boolean nameplateShowPersonal
 ---@return number spellId
 ---@return boolean canApplyAura
----@return boolean isBossAura
+---@return boolean isBossDebuff
 ---@return boolean castByPlayer
 ---@return boolean nameplateShowAll
----@return number timeMod
----@return boolean value1
----@return boolean value2
----@return boolean value3
-function UnitDebuff(unitId, index, filter) end
-
+---@return boolean timeMod
+function UnitDebuff(unit, index, filter) end
 ---! DRAFT - NEEDS REVIEW
----Returns a unit's defense-related statistics.
----[Documentation](https://wowpedia.fandom.com/wiki/API_UnitDefense)
----@param unit string
----@return number baseDefense
----@return number armorDefense
----@return number bonusDefense
----@return number bonusDefensePercent
-function UnitDefense(unit) end
+---Encounters a web request handling issue with the Warcraft Wiki.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_UnitResistance)
+function UnitResistance() end
+---! DRAFT - NEEDS REVIEW
+---Retrieves the details of a specified unit's buff.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_UnitBuff)
+---@param unit string The unit to query.
+---@param index number The index of the buff to retrieve.
+---@param filter string? A filter to apply to the buff list.
+---@return string name The name of the buff.
+---@return string icon The icon path of the buff.
+---@return number count The number of stacks of the buff.
+---@return number debuffType The debuff type, if applicable.
+---@return number duration The duration of the buff in seconds.
+---@return number expirationTime The time at which the buff will expire, in seconds since the epoch.
+---@return string unitCaster The unit that cast the buff.
+---@return boolean isStealable Whether the buff is stealable.
+---@return boolean shouldConsolidate Whether the buff should be consolidated.
+---@return boolean spellID The spell ID of the buff.
+---@return boolean canApplyAura Whether the buff can be applied to the aura.
+---@return boolean isBossDebuff Whether the buff is a boss debuff.
+function UnitBuff(unit, index, filter) end
+---! DRAFT - NEEDS REVIEW
+---Gets the aura details for a specified unit.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_UnitAura)
+---@param unit string The unit ID to inspect.
+---@param index number The aura index to fetch.
+---@param filter string Optional filter to apply to the aura search.
+---@return string name The name of the aura.
+---@return number icon The icon ID of the aura.
+---@return number count The number of stacks of the aura.
+---@return string debuffType The type of debuff (if any).
+---@return number duration The total duration of the aura.
+---@return number expirationTime The time at which the aura will expire.
+---@return string source The unit that applied the aura.
+---@return boolean isStealable If the aura can be stolen.
+---@return boolean nameplateShowPersonal Whether it shows on personal nameplates.
+---@return boolean spellId The spell ID of the aura.
+---@return boolean canApplyAura If you can apply this aura.
+---@return boolean isBossDebuff If this is a boss debuff.
+---@return boolean castByPlayer If the aura was cast by a player.
+---@return number nameplateShowAll If aura shows on nameplate.
+---@return number timeMod The time modification applied to the aura.
+function UnitAura(unit, index, filter) end
 
----Checks if the unit is in the same phase as the player.
----[Documentation](https://warcraft.wiki.gg/wiki/API_UnitInPhase)
----@param unit string
----@return boolean inSamePhase
-function UnitInPhase(unit) end
-
----Returns whether the specified unit is considered a civilian.  
----[Documentation](https://warcraft.wiki.gg/wiki/API_UnitIsCivilian)
----@param unit string
----@return boolean isCivilian
-function UnitIsCivilian(unit) end
-
----Returns the ranged attack power for the unit.
+---Returns the unit's ranged attack base and its modifier.
+---This API is only available in Cata Classic and Classic Era.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_UnitRangedAttack)
----@param unit string
----@return number attackPower
+---@param unit string A UnitId, likely only works for "player" and "pet".
+---@return number base The unit's base ranged attack number (0 if no ranged weapon is equipped).
+---@return number modifier The total effect of all modifiers (positive and negative) to ranged attack.
 function UnitRangedAttack(unit) end
 
----Returns the resistance information for a specified unit and type.  
----[Documentation](https://warcraft.wiki.gg/wiki/API_UnitResistance)
----@param unit string
----@param school number
----@return number base
----@return number total
----@return number bonus
----@return number penalty
-function UnitResistance(unit, school) end

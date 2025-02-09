@@ -1,11 +1,11 @@
 ---@meta
 
----! DRAFT - NEEDS REVIEW
----Returns the cooldown details for a specified companion type.
+---Returns cooldown information about a specific companion type like "CRITTER" or "MOUNT".
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_GetCompanionCooldown)
----@param type string The type of companion ("MOUNT" or "CRITTER").
----@param index number The index of the companion.
----@return number start Start time of the cooldown.
----@return number duration Duration of the cooldown.
----@return boolean enable Indicates whether the cooldown is enabled.
-function GetCompanionCooldown(type, index) end
+---@param companionType string Companion type, either "CRITTER" or "MOUNT".
+---@param id number Slot ID to query starting from 1.
+---@return number startTime The time the cooldown period began.
+---@return number duration The duration of the cooldown period.
+---@return number isEnabled 1 if the companion has a cooldown, otherwise 0.
+function GetCompanionCooldown(companionType, id) end
+

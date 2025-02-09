@@ -1,63 +1,56 @@
 ---@meta
 
----Returns the position coordinates of specified battlefield flag. 
+---Used to position the flag icon on the world map and the battlefield minimap.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_GetBattlefieldFlagPosition)
----@return number|nil flagX
----@return number|nil flagY
-function GetBattlefieldFlagPosition() end
+---@param index number Index to get the flag position from
+---@return number flagX Position of the flag on the map
+---@return number flagY Position of the flag on the map
+---@return string flagToken Name of flag texture in Interface\WorldStateFrame\
+function GetBattlefieldFlagPosition(index) end
 
----Returns detailed info about a specific battlefield instance.
+
+---Returns the battlefield instance ID for an index in the battlemaster listing. The function is used within Cata Classic and Classic Era.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_GetBattlefieldInstanceInfo)
----@param instanceIndex number
----@return string battlefieldName
----@return string instanceID
----@return number levelRangeMin
----@return number levelRangeMax
----@return number teamSize
----@return boolean registeredMatch
----@return number playTime
----@return string battlefieldType
-function GetBattlefieldInstanceInfo(instanceIndex) end
+---@param index number The battlefield instance index, from 1 to GetNumBattlefields().
+---@return number instanceID The battlefield instance ID.
+function GetBattlefieldInstanceInfo(index) end
 
----! DRAFT - NEEDS REVIEW
----Returns information about a specific battleground statistic.
+
+---Gets the list of battleground-specific columns on the scoreboard.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_GetBattlefieldStatInfo)
----@param index number
----@param battlegroundID number
----@return string statName
----@return number statValue
-function GetBattlefieldStatInfo(index, battlegroundID) end
+---@param index number Column to get data for
+---@return string name Name of the column (e.g., Flags Captured)
+---@return string icon Icon displayed on the scoreboard (e.g., Horde flag icon)
+---@return string tooltip Tooltip displayed when hovering over a column's name
+function GetBattlefieldStatInfo(index) end
 
 
----Returns the number of statistics available for a battlefield.
+---Returns the number of custom columns in the battleground scoreboard.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_GetNumBattlefieldStats)
----@return number numStats
+---@return number numStats Number of columns available for the battleground.
 function GetNumBattlefieldStats() end
 
 
----Returns the number of battlefields. 
+---Returns the number of available instances for the selected battleground at the battlemaster.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_GetNumBattlefields)
 ---@return number numBattlefields
 function GetNumBattlefields() end
 
 
----Returns information about the selected battlefield.
+---Returns the currently selected battlefield instance index at the battlemaster.
+---The zeroth index refers to "First Available".
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_GetSelectedBattlefield)
----@return number index
----@return boolean isActive
----@return boolean isQueue
+---@return number selectedIndex The index of the selected battlefield instance.
 function GetSelectedBattlefield() end
 
 
----! DRAFT - NEEDS REVIEW
----Checks if the player is currently in an inactive battlefield.
----[Documentation](https://warcraft.wiki.gg/wiki/API_C_InActiveBattlefield)
----@return boolean isActive
+---Returns whether the player is currently in an active battlefield.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_InActiveBattlefield)
+---@return boolean inBattlefield True if the player is in an active battlefield, false otherwise.
 function InActiveBattlefield() end
 
-
----Sets the selected battlefield index. 
+---! DRAFT - NEEDS REVIEW
+---Sets the selected battlefield by index.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_SetSelectedBattlefield)
----@param index number The index of the battlefield to select
----@param isParty boolean Whether to select for the entire party
-function SetSelectedBattlefield(index, isParty) end
+---@param battlefieldIndex number The index of the battlefield to select.
+function SetSelectedBattlefield(battlefieldIndex) end

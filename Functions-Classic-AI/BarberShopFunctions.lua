@@ -1,46 +1,62 @@
 ---@meta
 
-C_BarberShop = {}
-
----Cycles through character customization options in the Barber Shop.  
----[Documentation](https://warcraft.wiki.gg/wiki/API_C_BarberShop.CycleCharCustomization)
----@param optionID number
----@param forward boolean
-function C_BarberShop.CycleCharCustomization(optionID, forward) end
-
----Retrieves the cost of the player's choices in the Barber Shop.
+---Returns the cost of the barber's choice in the game. 
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_C_BarberShop.GetBarbersChoiceCost)
 ---@return number cost
 function C_BarberShop.GetBarbersChoiceCost() end
 
----Gets information about a specific customization type in the barber shop.
+
+---! DRAFT - NEEDS REVIEW
+---Cycles through character customization options in the barber shop.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_C_BarberShop.CycleCharCustomization)
+---@param type Enum.CharCustomizationType
+---@param forward boolean
+function C_BarberShop.CycleCharCustomization(type, forward) end
+
+
+---! DRAFT - NEEDS REVIEW
+---Retrieves information about a customization type in the BarberShop.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_C_BarberShop.GetCustomizationTypeInfo)
----@param id number The ID of the customization type.
----@return BarberShopAlternateFormData data
-function C_BarberShop.GetCustomizationTypeInfo(id) end
+---@param type Enum.CharCustomizationType
+---@return string customizationName
+---@return string name
+---@return boolean isCurrent
+function C_BarberShop.GetCustomizationTypeInfo(type) end
 
----Checks if the customization type is valid.  
+
+---! DRAFT - NEEDS REVIEW
+---Validates if a given type is a valid customization type in the BarberShop.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_C_BarberShop.IsValidCustomizationType)
----@param customizationType number
+---@param type Enum.CharCustomizationType
 ---@return boolean isValid
-function C_BarberShop.IsValidCustomizationType(customizationType) end
+function C_BarberShop.IsValidCustomizationType(type) end
 
----Determines if the character is viewing their original sex in the Barber Shop.
+
+---Returns whether the currently visible body type at the barber shop is different from the character's original body type.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_C_BarberShop.IsViewingNativeSex)
----@return boolean isViewingNativeSex
+---@return boolean isNativeSex True if the character hasn't changed body type in the barber shop UI, otherwise false
 function C_BarberShop.IsViewingNativeSex() end
 
----Checks if the currently viewed character sex in the BarberShop is visible.
+
+---Returns whether the currently visible body type at the barber shop matches the specified sex ID.
+---The sex parameter ranges from 0 (masculine/male) to 1 (feminine/female).
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_C_BarberShop.IsViewingVisibleSex)
----@return boolean isViewingVisibleSex
-function C_BarberShop.IsViewingVisibleSex() end
+---@param sex number
+---@return boolean isVisibleSex
+function C_BarberShop.IsViewingVisibleSex(sex) end
 
----Sets the portrait texture for the barber shop interface.
+
+---! DRAFT - NEEDS REVIEW
+---Sets the portrait texture for a specific race and gender.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_C_BarberShop.SetPortraitTexture)
----@param textureObject table
----@return boolean success 
-function C_BarberShop.SetPortraitTexture(textureObject) end
+---@param texture Texture
+---@param raceID number
+---@param sex number
+function C_BarberShop.SetPortraitTexture(texture, raceID, sex) end
 
----Confirms the selected choices at the barber.
----[Documentation](https://wowpedia.fandom.com/wiki/API_ConfirmBarbersChoice)
+
+--- Confirms the player's choice in the barber shop. 
+--- This API only exists in Cata Classic and Classic Era.
+--- [Documentation](https://warcraft.wiki.gg/wiki/API_ConfirmBarbersChoice)
 function ConfirmBarbersChoice() end
+

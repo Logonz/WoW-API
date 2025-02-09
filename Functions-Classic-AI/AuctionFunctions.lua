@@ -1,162 +1,183 @@
 ---@meta
 
----Checks if the player is allowed to send an auction query.
----@return boolean canSendQuery
-function CanSendAuctionQuery() end
-
----! DRAFT - NEEDS REVIEW
----Cancels a pending sale of an item.
+---Stops the process of listing multiple stacks of an item on the auction house.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_CancelSell)
 function CancelSell() end
 
----! DRAFT - NEEDS REVIEW
----Handles the selling of an item in the auction house.
----[Documentation](https://warcraft.wiki.gg/wiki/API_ClickAuctionSellItemButton)
-function ClickAuctionSellItemButton() end
 
----Closes the auction house interface. 
+---Closes the AuctionFrame if it is open. 
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_CloseAuctionHouse)
 function CloseAuctionHouse() end
 
----Returns additional information for an auctioned battle pet.
+
+---Determines if a new auction house query can be sent.
+---Returns whether a normal or full ("getall") auction house query is possible.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_CanSendAuctionQuery)
+---@return boolean canQuery True if a normal auction house query can be made
+---@return boolean canQueryAll True if a full "getall" auction house query can be made
+function CanSendAuctionQuery() end
+
+
+---Puts the currently 'picked up' item into the 'create auction' slot.
+---Works while the 'auction' window is up, allowing item placement in the auction house interface.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_ClickAuctionSellItemButton)
+---@param frame Frame The UI frame where the action occurs
+---@param button string|integer The mouse button used, e.g., a string like "LeftButton" or a button number
+---@param isDown boolean Whether the mouse button is held down
+function ClickAuctionSellItemButton(frame, button, isDown) end
+
+
+---Retrieves info about a Battle Pet from the Auction House's current listing.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_GetAuctionItemBattlePetInfo)
----@param type string The type of the auction (either "list", "bidder", or "owner").
----@param index number The index of the auction item in the list.
----@return string speciesID
----@return string level
----@return string breedQuality
----@return number maxHealth
----@return number power
----@return number speed
----@return string name
+---@param type string One of "list", "bidder", "owner".
+---@param index number The index of the item in the list to retrieve info from (usually 1-50).
+---@return number creatureID The indexing value Blizzard uses to number NPCs.
+---@return number displayID An indexing value Blizzard uses to number model/skin combinations.
 function GetAuctionItemBattlePetInfo(type, index) end
 
----Returns various details about a specific auction item.
----[Documentation](https://wowpedia.fandom.com/wiki/API_GetAuctionItemInfo)
----@param type string Auction type
----@param index number Auction index
----@return string name
----@return string texture
----@return number count
----@return number quality
----@return number canUse
----@return number level
----@return string levelColHeader
----@return boolean isFullScan
----@return boolean isHighBidder
----@return boolean isOwner
----@return number bidAmount
----@return number minIncrement
----@return number buyoutPrice
----@return number duration
----@return string[5] itemLink
-function GetAuctionItemInfo(type, index) end
 
----Returns the item link for a specific item in the auction house.
----[Documentation](https://wowpedia.fandom.com/wiki/API_GetAuctionItemLink)
----@param type string The type of auction ("list", "owner", "bidder").
----@param index number The index of the auction item.
----@return string? itemLink The item link, or nil if not available.
+---Retrieves the itemLink of an item from the Auction House list based on the specified type and index.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_GetAuctionItemLink)
+---@param type string One of "list", "bidder", or "owner"
+---@param index number The index of the item in the list to retrieve, typically between 1 and 50
+---@return string|nil itemLink The itemLink for the specified item, or nil if the type or index is invalid
 function GetAuctionItemLink(type, index) end
 
----Returns a list of available item sub-classes for a given auction item class.
----[Documentation](https://wowpedia.fandom.com/wiki/API_GetAuctionItemSubClasses)
+
+---Gets a list of the sub-classes for an Auction House item class.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_GetAuctionItemSubClasses)
 ---@param classID number The ID of the item class.
----@return string[] subClasses A list of sub-class names.
+---@return number[] subClasses The valid subclasses for an item class.
 function GetAuctionItemSubClasses(classID) end
 
----Returns the time left for an auction item.
+
+---Retrieves the time left for an item in the Auction House.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_GetAuctionItemTimeLeft)
----@param type string
----@param index number
----@return number timeLeft
+---@param type string One of the following: "list", "bidder", "owner".
+---@param index number The index of the item (1-50, inclusive).
+---@return number timeleft A number between 1 and 4 where 1 is short, 2 is medium, 3 is long, and 4 is very long.
 function GetAuctionItemTimeLeft(type, index) end
 
----Returns information about the item currently set in the auction sell frame.
+
+---Retrieves information about the current item being set for auction in the seller's auction window.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_GetAuctionSellItemInfo)
 ---@return string name
 ---@return string texture
 ---@return number count
----@return boolean quality
----@return number canUse
+---@return number quality
+---@return boolean canUse
 ---@return number price
+---@return number pricePerUnit
+---@return number stackCount
+---@return number totalCount
+---@return number itemID
 function GetAuctionSellItemInfo() end
 
----Returns the number of auction items for a given type.
----[Documentation](https://warcraft.wiki.gg/wiki/API_GetNumAuctionItems)
----@param type string The type of auction items to query. Can be "list", "bidder", or "owner".
----@return number numAuctions The total number of auctions.
----@return number totalAuctions The total number of auctions for the given type.
-function GetNumAuctionItems(type) end
 
----Returns a table of AuctionDetails for the player's owned auctions.
+---Retrieves info about one item in the current retrieved list of items from the Auction House.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_GetAuctionItemInfo)
+---@param type string One of the following: "list", "bidder", or "owner".
+---@param index number The index of the item in the list to retrieve info from (normally 1-50, inclusive).
+---@return string name The name of the item.
+---@return number texture The fileID of the texture of the item.
+---@return number count The number of items in the auction item, zero if sold.
+---@return Enum.ItemQuality quality The item quality.
+---@return boolean canUse True if the user can use the item.
+---@return number level The level required to use the item.
+---@return string levelColHeader Specifies the meaning of level: "REQ_LEVEL_ABBR", "SKILL_ABBR", "ITEM_LEVEL_ABBR", "SLOT_ABBR".
+---@return number minBid The starting bid price.
+---@return number minIncrement The minimum amount for the next bid.
+---@return number buyoutPrice Zero if no buy out, otherwise the buyout price.
+---@return number bidAmount The current highest bid.
+---@return string? highBidder Name of highest bidder, nil if none.
+---@return string? bidderFullName Bidder's full name if from virtual realm.
+---@return string owner The player selling the item.
+---@return string? ownerFullName Owner's full name if from virtual realm.
+---@return number saleStatus 1 for sold, 0 for unsold.
+---@return number itemId The item ID.
+---@return boolean hasAllInfo Was everything returned.
+function GetAuctionItemInfo(type, index) end
+
+
+---Retrieves the number of auction items of a certain type.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_GetNumAuctionItems)
+---@param list string The type of auction items ("list", "bidder", or "owner")
+---@return number batch The size of the batch being viewed
+---@return number count The total number of items in the query
+function GetNumAuctionItems(list) end
+
+
+---Updates the owned auction list.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_GetOwnerAuctionItems)
----@return AuctionDetails[] auctions
 function GetOwnerAuctionItems() end
 
----Checks if the auction sort is reversed for the specified sort type.
----@param auctionSortType AuctionSortType The type of auction sort (e.g., "item", "time", "price").
----@return boolean isReversed Returns true if the sort type is reversed; otherwise, false.
-function IsAuctionSortReversed(auctionSortType) end
 
----Places a bid on an auction.
+---Returns the sorting order for a specified column in the auction house display.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_IsAuctionSortReversed)
+---@param type string One of the following: "list", "bidder", "owner"
+---@param sort string One of the following: "quality", "level", "status", "duration", "bid", "name", "buyout"
+---@return number|nil sorted 1 if the column is sorted in reverse order, nil otherwise
+function IsAuctionSortReversed(type, sort) end
+
+
+---Places a bid on a selected auction item.
+---The function can only be successfully called after a hardware event since patch 2.0.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_PlaceAuctionBid)
----@param auctionType number
----@param index number
----@param bidAmount number
-function PlaceAuctionBid(auctionType, index, bidAmount) end
+---@param type string One of the following: "list", "bidder", "owner"
+---@param index number The index of the item in the list to bid on (normally 1-50, inclusive)
+---@param bid number The amount of money to bid in copper
+function PlaceAuctionBid(type, index, bid) end
 
 
----Posts an item for auction.
+---Starts the auction you have created in the Create Auction panel.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_PostAuction)
----@param auctionID number The unique identifier for the auction.
----@param bidAmount number The starting bid amount for the auction.
----@param buyoutAmount? number The immediate purchase price for the auction.
----@param auctionDuration Enum.AuctionDuration The duration for which to list the auction.
----@return boolean success Indicates if the auction was successfully posted.
-function PostAuction(auctionID, bidAmount, buyoutAmount, auctionDuration) end
+---@param minBid number The minimum bid price for this auction in copper.
+---@param buyoutPrice number The buyout price for this auction in copper.
+---@param runTime number The duration for which the auction should be posted.
+---@param stackSize number The size of each stack to be posted.
+---@param numStacks number The number of stacks to post.
+function PostAuction(minBid, buyoutPrice, runTime, stackSize, numStacks) end
 
 
-
----Queries the auction house for items based on specified parameters.
+---Queries the server for information about current auctions when CanSendAuctionQuery() is true.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_QueryAuctionItems)
----@param name? string The name of the item.
----@param minLevel? number The minimum item level.
----@param maxLevel? number The maximum item level.
----@param page? number The auction house page.
----@param isUsable? boolean Filters items usable by the player.
----@param qualityIndex? number The item quality filter.
----@param getAll? boolean If true, disregards other filter parameters and returns all results.
----@return boolean success Indicates if the query was successful.
-function QueryAuctionItems(name, minLevel, maxLevel, page, isUsable, qualityIndex, getAll) end
+---@param text string A part of the item's name, or an empty string; limited to 63 bytes.
+---@param minLevel? number Minimum usable level requirement for items.
+---@param maxLevel? number Maximum usable level requirement for items.
+---@param page number What page in the auction house this shows up. Note that pages start at 0.
+---@param usable boolean Restricts items to those usable by the current character.
+---@param rarity? Enum.ItemQuality Restricts the quality of the items found.
+---@param getAll boolean Download the entire auction house as a single page.
+---@param exactMatch boolean Will only find items whose whole name matches the search string.
+---@param filterData? table Table of additional filtering data.
+function QueryAuctionItems(text, minLevel, maxLevel, page, usable, rarity, getAll, exactMatch, filterData) end
 
 
----Sets the selected auction item.  
+---Selects a specific item in the auction house.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_SetSelectedAuctionItem)
----@param auctionType string
----@param index number
-function SetSelectedAuctionItem(auctionType, index) end
-
----Sorts auction house items based on specified criteria.
----[Documentation](https://warcraft.wiki.gg/wiki/API_SortAuctionItems)
----@param sortType number
----@param reverse boolean
-function SortAuctionItems(sortType, reverse) end
-
+---@param type string One of "list" (auction items), "bidder" (items bid on), or "owner" (items up for auction).
+---@param index number The index of the item in the list (typically between 1 and 50 inclusive).
+function SetSelectedAuctionItem(type, index) end
 
 ---! DRAFT - NEEDS REVIEW
----Sorts the current set of auction items according to a specified sorting order.
+---**Unable to retrieve function details from the provided URL**  
+---Please ensure the webpage is accessible and try again with the correct content.
+
+---! DRAFT - NEEDS REVIEW
+---Sorts auctions based on specified parameters.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_SortAuctionSetSort)
----@param sortType string The type of sort, e.g., "price", "quantity".
----@param sortOrder boolean If true, sorts in ascending order; otherwise descending.
-function SortAuctionSetSort(sortType, sortOrder) end
+---@param sortType string The type of sorting to apply
+---@param sortAscending boolean Whether to sort in ascending order
+---@return boolean success Indicates if the sorting operation was successful
+function SortAuctionSetSort(sortType, sortAscending) end
 
-
----Starts an auction using specified item and auction parameters.
+---! DRAFT - NEEDS REVIEW
+---Starts an auction based on the provided parameters. 
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_StartAuction)
----@param startPrice number The starting price for the auction.
----@param duration number The duration of the auction (in hours).
----@param itemIndex number The index of the item in the bag.
----@param stackSize number The size of the item stack.
----@param numStacks number The number of stacks being auctioned.
-function StartAuction(startPrice, duration, itemIndex, stackSize, numStacks) end
+---@param itemID number The ID of the item to start auctioning.
+---@param quantity number The quantity of the item.
+---@param startingBid number The initial bid amount.
+---@param buyoutPrice number The buyout price, if any.
+---@param auctionTime number The auction duration in hours.
+---@return boolean success True if the auction was successful, false otherwise.
+function StartAuction(itemID, quantity, startingBid, buyoutPrice, auctionTime) end

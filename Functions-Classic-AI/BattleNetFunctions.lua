@@ -1,104 +1,121 @@
 ---@meta
 
----Provides information about a specific game account of a Battle.net friend.<br>[Documentation](https://warcraft.wiki.gg/wiki/API_BNGetFriendGameAccountInfo)
----@param friendIndex number
----@param accountIndex number
----@return boolean hasFocus
----@return string clientProgram
----@return number realmID
----@return string realmName
----@return number faction
----@return string raceName
----@return string className
----@return string areaName
----@return number characterLevel
----@return string characterName
----@return boolean isOnline
----@return number? realmAddress
----@return number? actorID
-function BNGetFriendGameAccountInfo(friendIndex, accountIndex) end
+---Returns the specified Battle.net friend's number of accounts. 
+---This function returns the number of accounts a player has associated with a given battletag.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_BNGetNumFriendGameAccounts)
+---@param friendIndex number The Battle.net friend's index on the friendslist
+---@return number numGameAccounts The number of accounts or 0 if the friend is not online.
+function BNGetNumFriendGameAccounts(friendIndex) end
 
----Returns information about a Battle.net friend.
+
+---Returns information on the game the Battle.net friend is playing.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_C_BattleNet.GetFriendGameAccountInfo)
+---@param friendIndex number Index ranging from 1 to BNGetNumFriends()
+---@param accountIndex number Index ranging from 1 to C_BattleNet.GetFriendNumGameAccounts()
+---@return BNetGameAccountInfo? gameAccountInfo
+function C_BattleNet.GetFriendGameAccountInfo(friendIndex, accountIndex) end
+
+
+---Check if high resolution textures are installed.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_C_BattleNet.AreHighResTexturesInstalled)
+---@return boolean installed
+function C_BattleNet.AreHighResTexturesInstalled() end
+
+
+---Returns information about the specified RealID friend.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_BNGetFriendInfo)
----@param friendIndex number
----@return string givenName
----@return string battleTag
----@return number bnetIDAccount
----@return number client
----@return boolean isOnline
----@return boolean isAFK
----@return boolean isDND
----@return string messageText
----@return number noteText
----@return string presenceName
----@return number lastOnline
+---@param friendIndex number The index on the friends list for this RealID friend.
+---@return number bnetAccountID A temporary ID for the friend's battle.net account during this session.
+---@return string accountName Escape sequence representing the friend's name.
+---@return string battleTag Unique string that identifies the friend.
+---@return boolean isBattleTagPresence Whether the friend is known by their BattleTag.
+---@return string characterName The name of the logged in character.
+---@return number bnetIDGameAccount A unique numeric identifier for the friend's game account.
+---@return string client The client the friend is using.
+---@return boolean isOnline Whether the friend is online.
+---@return number|nil lastOnline Time since the friend was last online.
+---@return boolean isAFK Whether the friend is flagged as Away.
+---@return boolean isDND Whether the friend is flagged as Busy.
+---@return string messageText The friend's Battle.Net broadcast message.
+---@return string noteText Player's note about this friend.
+---@return boolean isRIDFriend True for RealID friends, false for BattleTag friends.
+---@return number messageTime Seconds elapsed since broadcast message was sent.
+---@return boolean canSoR Whether this friend can receive a Scroll of Resurrection.
+---@return boolean isReferAFriend 
+---@return boolean canSummonFriend 
 function BNGetFriendInfo(friendIndex) end
 
 
----! DRAFT - NEEDS REVIEW
----Returns information for a Real ID friend by their ID.
----@param friendID number
----@return string accountName
----@return BNetAccountID bnetAccountID
----@return number client
----@return (unknown) isOnline
----@return (unknown) lastOnline
----@return string noteText
----@return (unknown) isAFK
----@return (unknown) isDND
----@return (unknown) broadcastText
----@return string broadcastTime
-function BNGetFriendInfoByID(friendID) end
+---Returns information about the specified RealID friend.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_BNGetFriendInfo)
+---@param friendIndex number The index on the friends list for this RealID friend.
+---@return number bnetAccountID A temporary ID for the friend's battle.net account during this session.
+---@return string accountName An escape sequence representing the friend's full name or BattleTag name.
+---@return string battleTag The unique BattleTag string (e.g., "Nickname#0001").
+---@return boolean isBattleTagPresence Whether the friend is known by their BattleTag.
+---@return string characterName The name of the logged in character.
+---@return number bnetIDGameAccount A unique identifier for the friend's game account during this session.
+---@return string client The client used, see BNET_CLIENT.
+---@return boolean isOnline Whether the friend is online.
+---@return number? lastOnline The seconds elapsed since last online or nil if currently online.
+---@return boolean isAFK Whether the friend is flagged as Away.
+---@return boolean isDND Whether the friend is flagged as Busy.
+---@return string messageText The friend's Battle.Net broadcast message.
+---@return string noteText The note added about this friend.
+---@return boolean isRIDFriend Returns true for RealID friends and false for BattleTag friends.
+---@return number messageTime seconds elapsed since the current broadcast message was sent.
+---@return boolean canSoR Whether this friend can receive a Scroll of Resurrection.
+---@return boolean isReferAFriend
+---@return boolean canSummonFriend
+function BNGetFriendInfo(friendIndex) end
 
 
----Retrieves information about another player's game account by their Battle.net friend game account ID.
----[Documentation](https://warcraft.wiki.gg/wiki/API_BNGetGameAccountInfo)
----@param accountID number
----@return number gameAccountID
----@return number clientProgram
----@return string? realmName
----@return string? realmID
----@return string? factionName
----@return string characterName
----@return number? raceID
----@return number? classID
----@return number? guildID
----@return number? zoneID
----@return number? level
----@return boolean canSoR
----@return boolean restricted
----@return boolean toonID
-function BNGetGameAccountInfo(accountID) end
-
----Returns the game account info for a specified GUID.
----[Documentation](https://warcraft.wiki.gg/wiki/API_BNGetGameAccountInfoByGUID)
----@param guid string
----@return unknown token
----@return unknown hasFocus
----@return unknown characterName
----@return unknown clientProgram
----@return unknown realmName
----@return unknown realmID
----@return unknown faction
----@return unknown race
----@return unknown class
----@return unknown zoneName
----@return unknown level
----@return unknown gameText
----@return unknown broadcastText
----@return unknown unknown1
----@return unknown unknown2
----@return unknown unknown3
-function BNGetGameAccountInfoByGUID(guid) end
-
----Returns the number of game accounts associated with a Battle.net friend.
----[Documentation](https://warcraft.wiki.gg/wiki/API_BNGetNumFriendGameAccounts)
----@param bnetIDAccount number
----@return number numGameAccounts
-function BNGetNumFriendGameAccounts(bnetIDAccount) end
+---Returns information about the specified toon of a RealID friend.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_BNGetFriendGameAccountInfo)
+---@param friendIndex number Ranges from 1 to BNGetNumFriendGameAccounts().
+---@return boolean hasFocus Whether this toon is displayed in Blizzard's FriendFrame.
+---@return string characterName The name of the toon.
+---@return string client The client type (e.g., "WoW", "S2").
+---@return string realmName The realm the toon is logged in.
+---@return number realmID The ID of the realm.
+---@return string faction Alliance or Horde.
+---@return string race Localized race name (e.g., "Blood Elf").
+---@return string class Localized class name (e.g., "Death Knight").
+---@return string guild Guild of the toon, returns "" if no guild.
+---@return string zoneName Localized zone name (e.g., "The Undercity").
+---@return string level Current level of the toon.
+---@return string gameText For WoW, returns "zoneName - realmName".
+---@return string broadcastText Battle.Net broadcast message.
+---@return number broadcastTime Seconds since the broadcast message was sent.
+---@return boolean canSoR If the friend can receive a Scroll of Resurrection.
+---@return number toonID Unique identifier for the friend's character.
+---@return number bnetIDAccount Battle.net account ID.
+---@return boolean isGameAFK If the player is AFK.
+---@return boolean isGameBusy If the player is busy.
+function BNGetFriendGameAccountInfo(friendIndex) end
 
 
----Checks if high-resolution textures are installed on the system. 
----[Documentation](https://warcraft.wiki.gg/wiki/API_C_BattleNet.AreHighResTexturesInstalled)
----@return boolean isInstalled
-function C_BattleNet.AreHighResTexturesInstalled() end
+---Returns information about the specified toon of a RealID friend.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_BNGetFriendGameAccountInfo)
+---@param friendIndex number Ranging from 1 to BNGetNumFriendGameAccounts()
+---@return boolean hasFocus Whether or not this toon is the one currently being displayed in Blizzard's FriendFrame.
+---@return string characterName The name of the logged in toon/character.
+---@return string client Either "WoW", "S2", "WTCG", "App", "Hero", "Pro", "CLNT", or "D3".
+---@return string realmName The name of the logged in realm.
+---@return number realmID The ID for the logged in realm.
+---@return string faction The faction name (e.g., "Alliance" or "Horde").
+---@return string race The localized race name (e.g., "Blood Elf").
+---@return string class The localized class name (e.g., "Death Knight").
+---@return string guild Seems to return "" even if the player is in a guild.
+---@return string zoneName The localized zone name (e.g., "The Undercity").
+---@return string level The current level (e.g., "90").
+---@return string gameText For WoW, returns "zoneName - realmName". For StarCraft 2 and Diablo 3, returns the location or activity the player is currently engaged in.
+---@return string broadcastText The Battle.Net broadcast message.
+---@return number broadcastTime The number of seconds elapsed since the current broadcast message was sent.
+---@return boolean canSoR Whether or not this friend can receive a Scroll of Resurrection.
+---@return number toonID A unique numeric identifier for the friend's character during this session.
+---@return number bnetIDAccount 
+---@return boolean isGameAFK 
+---@return boolean isGameBusy 
+function BNGetFriendGameAccountInfo(friendIndex) end
+

@@ -1,81 +1,91 @@
 ---@meta
 
-
----Expands or collapses the list of currencies.
+---Alters the expanded state of a currency list header.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_ExpandCurrencyList)
----@param currencyTypeIndex number
----@param isExpanded boolean
-function ExpandCurrencyList(currencyTypeIndex, isExpanded) end
+---@param id number Index of the header in the currency list to expand/collapse.
+---@param expanded number 0 to set to collapsed state; 1 to set to expanded state.
+function ExpandCurrencyList(id, expanded) end
 
 
----Retrieves information about a specified currency in the player's backpack.  
----[Documentation](https://wowpedia.fandom.com/wiki/API_GetBackpackCurrencyInfo)
----@param index number The index of the currency in the backpack (1 to 3).
----@return string currencyName The name of the currency.
----@return number currencyAmount The amount of the currency.
----@return number currencyIconFileID The file ID of the currency's icon.
+---Returns info for a tracked currency in the backpack.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_GetBackpackCurrencyInfo)
+---@param index number Ascending index from 1 to GetNumWatchedTokens().
+---@return string name Localized currency name.
+---@return number count Amount currently possessed by the player.
+---@return number icon FileID of the currency icon.
+---@return number currencyID CurrencyID of the currency.
 function GetBackpackCurrencyInfo(index) end
 
----Retrieves information about a specific currency.
----[Documentation](https://warcraft.wiki.gg/wiki/API_GetCurrencyInfo)
----@param currencyID number
----@return string name
----@return string currentAmount
----@return string iconFileID
----@return string earnedThisWeek
----@return string weeklyMax
----@return string totalMax
----@return boolean isDiscovered
-function GetCurrencyInfo(currencyID) end
 
----Returns a hyperlink for a specified currency.
+---Retrieves the currency link for a specified currency ID.  
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_GetCurrencyLink)
----@param currencyID number
----@param currencyAmount number
----@return string hyperlink
+---@param currencyID integer The currency index
+---@param currencyAmount integer The amount of currency
+---@return string? currencyLink The currency link, or nil if the index is for a header
 function GetCurrencyLink(currencyID, currencyAmount) end
 
----! DRAFT - NEEDS REVIEW
----Retrieves detailed information about a currency based on its index.
----[Documentation](https://warcraft.wiki.gg/wiki/API_GetCurrencyListInfo)
----@param index number
----@return string name
----@return boolean isHeader
----@return boolean isExpanded
----@return boolean isUnused
----@return boolean isWatched
----@return number count
----@return string icon
----@return number unusedCurrencyType
----@return number itemID
-function GetCurrencyListInfo(index) end
 
----Returns the number of currencies in the currency list.
+---Returns the number of entries in the player's currency list.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_GetCurrencyListSize)
----@return number numCurrencies
+---@return number listSize
 function GetCurrencyListSize() end
 
----Returns the number of currencies rewarded for a specified quest.
+
+---Returns information about an entry in the currency list.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_GetCurrencyListInfo)
+---@param index number The position of the currency in the list, starting from 1.
+---@return string name Localized currency or currency header name.
+---@return boolean isHeader True if the entry is a header.
+---@return boolean isExpanded True if the header is expanded.
+---@return boolean isUnused True if the currency is marked as unused.
+---@return boolean isWatched True if the currency is being displayed on the backpack.
+---@return number count Amount of this currency in the player's possession.
+---@return string icon Path to the icon texture for item-based currencies.
+---@return number maximum The maximum amount for the currency with 2 extra zeros or 0 if none.
+---@return number|nil hasWeeklyLimit 1 if a weekly limit exists for the currency.
+---@return number|nil currentWeeklyAmount Current week's amount of the currency.
+---@return any unknown Possibly a deprecated slot, returns nil.
+---@return number itemID Item ID corresponding to this currency if item-based.
+function GetCurrencyListInfo(index) end
+
+
+---Retrieves information about a currency, including its name, amount, and rarity.
+---This function can accept an ID, a currency link, or a string fragment to identify the currency.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_GetCurrencyInfo)
+---@param identifier number|string Either a CurrencyID, a currencyLink, or a currencyString
+---@return string name The name of the currency, localized
+---@return number currentAmount Current amount of the currency
+---@return string texture The file name of the currency's icon
+---@return number earnedThisWeek The amount of the currency earned this week
+---@return number weeklyMax Maximum amount of currency that can be earned this week
+---@return number totalMax Total maximum currency that can be stockpiled
+---@return boolean isDiscovered Whether the currency has been discovered by the character
+---@return integer rarity Rarity indicator for the currency
+function GetCurrencyInfo(identifier) end
+
+
+---Returns the number of currency rewards for the currently viewed quest in the quest log or quest info frame.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_GetNumRewardCurrencies)
----@param questID number
----@return number currencyCount
-function GetNumRewardCurrencies(questID) end
+---@return number numCurrencies The number of currency rewards
+function GetNumRewardCurrencies() end
 
----Picks up a currency, placing it on the cursor.
+
+---Picks up a specified currency to the cursor.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_PickupCurrency)
----@param type string The type of the currency, either "currency" or "token".
----@param index number The index of the currency or token.
-function PickupCurrency(type, index) end
+---@param type number
+function PickupCurrency(type) end
 
----Sets whether a specific currency should be tracked in the backpack.
+
+---Alters the backpack tracking state of a currency.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_SetCurrencyBackpack)
----@param currencyType number
----@param backpackEnabled boolean
-function SetCurrencyBackpack(currencyType, backpackEnabled) end
+---@param id number Index of the currency in the currency list.
+---@param backpack number 1 to track; 0 to clear tracking.
+function SetCurrencyBackpack(id, backpack) end
 
 
----Marks a specified currency ID as unused.
+---Marks or unmarks a currency as unused, altering its position in the currency list.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_SetCurrencyUnused)
----@param currencyID number
----@param unused boolean
-function SetCurrencyUnused(currencyID, unused) end
+---@param id number Index of the currency in the currency list.
+---@param unused number 1 to mark as unused, 0 to mark as used.
+function SetCurrencyUnused(id, unused) end
+

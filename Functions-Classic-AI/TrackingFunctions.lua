@@ -1,7 +1,7 @@
 ---@meta
 
----Returns the texture of the specified tracking type.
+---Returns the texture of the active tracking buff.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_GetTrackingTexture)
----@param index number
----@return string texture
-function GetTrackingTexture(index) end
+---@return number|nil icon The texture as FileID or nil if none
+function GetTrackingTexture() end
+

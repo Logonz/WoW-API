@@ -1,17 +1,18 @@
 ---@meta
 
-C_Container = {}
-
----Retrieves the item IDs of gems socketed in the specified container item's equipment slot.
----[Documentation](https://warcraft.wiki.gg/wiki/API_C_Container.GetContainerItemGems)
----@param bagID number The bag ID.
----@param slotIndex number The slot index.
----@return number[] gemIDs An array containing the item IDs of the socketed gems.
-function C_Container.GetContainerItemGems(bagID, slotIndex) end
-
 ---! DRAFT - NEEDS REVIEW
----Determines if a bag slot flag is enabled on other bank bags.
+---Returns the gem IDs for a container item.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_C_Container.GetContainerItemGems)
+---@param containerIndex Enum.BagIndex
+---@param slotIndex number
+---@return number[] numGems
+function C_Container.GetContainerItemGems(containerIndex, slotIndex) end
+
+
+---Checks if a bag slot flag is enabled on other bank bags. 
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_C_Container.IsBagSlotFlagEnabledOnOtherBankBags)
----@param flag number
----@return boolean isEnabled
-function C_Container.IsBagSlotFlagEnabledOnOtherBankBags(flag) end
+---@param bagIndex Enum.BagIndex
+---@param flagIndex number
+---@return boolean isSet
+function C_Container.IsBagSlotFlagEnabledOnOtherBankBags(bagIndex, flagIndex) end
+

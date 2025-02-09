@@ -1,52 +1,58 @@
 ---@meta
 
-C_Engraving = {}
-
----Adds a category filter.
+---! DRAFT - NEEDS REVIEW
+---Adds a category filter for engraving.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_C_Engraving.AddCategoryFilter)
----@param categoryID number
-function C_Engraving.AddCategoryFilter(categoryID) end
+---@param category number
+function C_Engraving.AddCategoryFilter(category) end
 
----Adds an exclusive category filter.
----[Documentation](https://warcraft.wiki.gg/wiki/API_C_Engraving.AddExclusiveCategoryFilter)
----@param categoryID number
-function C_Engraving.AddExclusiveCategoryFilter(categoryID) end
 
----Cast a rune with the specified engraving ID.
----[Documentation](https://warcraft.wiki.gg/wiki/API_C_Engraving.CastRune)
----@param engravingID number
-function C_Engraving.CastRune(engravingID) end
-
----Clears all category filters for engravings.
+---! DRAFT - NEEDS REVIEW  
+---Clears all category filters in the C_Engraving module.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_C_Engraving.ClearAllCategoryFilters)
 function C_Engraving.ClearAllCategoryFilters() end
 
----! DRAFT - NEEDS REVIEW
----Clears the category filter for engravings.
----[Documentation](https://warcraft.wiki.gg/wiki/API_C_Engraving.ClearCategoryFilter)
-function C_Engraving.ClearCategoryFilter() end
 
----Clears exclusive category filters for the engraving system.
+---! DRAFT - NEEDS REVIEW
+---Adds an exclusive category filter for engraving.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_C_Engraving.AddExclusiveCategoryFilter)
+---@param category number The category to add as an exclusive filter.
+function C_Engraving.AddExclusiveCategoryFilter(category) end
+
+
+---! DRAFT - NEEDS REVIEW
+---Casts a rune using the provided skill line ability ID. 
+---[Documentation](https://warcraft.wiki.gg/wiki/API_C_Engraving.CastRune)
+---@param skillLineAbilityID number
+function C_Engraving.CastRune(skillLineAbilityID) end
+
+
+---Clears the exclusive category filter for engravings.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_C_Engraving.ClearExclusiveCategoryFilter)
 function C_Engraving.ClearExclusiveCategoryFilter() end
 
 
+---Clears the category filter for engraving.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_C_Engraving.ClearCategoryFilter)
+---@param category number
+function C_Engraving.ClearCategoryFilter(category) end
+
+
 ---! DRAFT - NEEDS REVIEW
----Enables a filter for engravings on equipped items.
+---Enables or disables the equipped filter for engraving.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_C_Engraving.EnableEquippedFilter)
-function C_Engraving.EnableEquippedFilter() end
+---@param enabled boolean
+function C_Engraving.EnableEquippedFilter(enabled) end
 
 
----Returns information about the currently cast rune.
+---! DRAFT - NEEDS REVIEW
+---Retrieves the current rune cast information in the engineering interface.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_C_Engraving.GetCurrentRuneCast)
----@return number runeID
----@return string icon
----@return string name
----@return number startTime
----@return number endTime
+---@return EngravingData? engravingInfo
 function C_Engraving.GetCurrentRuneCast() end
 
 
+---! DRAFT - NEEDS REVIEW
 ---Checks if the engraving mode is enabled.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_C_Engraving.GetEngravingModeEnabled)
 ---@return boolean enabled
@@ -54,99 +60,130 @@ function C_Engraving.GetEngravingModeEnabled() end
 
 
 ---! DRAFT - NEEDS REVIEW
----Retrieve the filter status for an exclusive engraving category.
----@param index number
----@return boolean isEnabled
-function C_Engraving.GetExclusiveCategoryFilter(index) end
+---Determines the exclusive category filter. 
+---[Documentation](https://warcraft.wiki.gg/wiki/API_C_Engraving.GetExclusiveCategoryFilter)
+---@return number? category
+function C_Engraving.GetExclusiveCategoryFilter() end
 
----Returns the number of runes known for a character.
+
+---! DRAFT - NEEDS REVIEW
+---Returns the number of runes known and the maximum possible runes for an optional equipment slot.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_C_Engraving.GetNumRunesKnown)
----@return number numRunesKnown
-function C_Engraving.GetNumRunesKnown() end
+---@param equipmentSlot? number
+---@return number known
+---@return number max
+function C_Engraving.GetNumRunesKnown(equipmentSlot) end
 
----Returns information about rune categories.
----[Documentation](https://warcraft.wiki.gg/wiki/API_C_Engraving.GetRuneCategories)
----@return table categories Information about available rune categories
-function C_Engraving.GetRuneCategories() end
 
----Retrieves the rune associated with a specific equipment slot. 
+---! DRAFT - NEEDS REVIEW
+---Retrieves the rune information for a specific inventory slot. 
+---[Documentation](https://warcraft.wiki.gg/wiki/API_C_Engraving.GetRuneForInventorySlot)
+---@param containerIndex number
+---@param slotIndex number
+---@return EngravingData? engravingInfo
+function C_Engraving.GetRuneForInventorySlot(containerIndex, slotIndex) end
+
+
+---Gets rune information associated with a specific equipment slot. 
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_C_Engraving.GetRuneForEquipmentSlot)
 ---@param equipmentSlot number
----@return number runeID
+---@return EngravingData? engravingInfo
 function C_Engraving.GetRuneForEquipmentSlot(equipmentSlot) end
 
----Returns the rune for a specified inventory slot. 
----[Documentation](https://warcraft.wiki.gg/wiki/API_C_Engraving.GetRuneForInventorySlot)
----@param inventorySlotID number
----@return number runeID
-function C_Engraving.GetRuneForInventorySlot(inventorySlotID) end
 
----Returns the list of runes available for a specified category.
----[Documentation](https://warcraft.wiki.gg/wiki/API_C_Engraving.GetRunesForCategory)
----@param categoryID number
----@return RuneInfo[] runes
-function C_Engraving.GetRunesForCategory(categoryID) end
+---Returns rune category IDs based on filtering options.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_C_Engraving.GetRuneCategories)
+---@param shouldFilter boolean
+---@param ownedOnly boolean
+---@return number[] categories
+function C_Engraving.GetRuneCategories(shouldFilter, ownedOnly) end
 
----Checks if a category filter is applied.
----[Documentation](https://warcraft.wiki.gg/wiki/API_C_Engraving.HasCategoryFilter)
----@param categoryID number
----@return boolean hasFilter
-function C_Engraving.HasCategoryFilter(categoryID) end
 
----Checks if engraving is enabled for a given map. 
+---Determines if engraving is enabled.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_C_Engraving.IsEngravingEnabled)
----@param uiMapID number
----@return boolean isEnabled
-function C_Engraving.IsEngravingEnabled(uiMapID) end
-
----Determines if an equipment slot can be engraved.
----[Documentation](https://warcraft.wiki.gg/wiki/API_C_Engraving.IsEquipmentSlotEngravable)
----@param equipmentSlotIndex number
----@return boolean isEngravable
-function C_Engraving.IsEquipmentSlotEngravable(equipmentSlotIndex) end
+---@return boolean value
+function C_Engraving.IsEngravingEnabled() end
 
 
+---! DRAFT - NEEDS REVIEW
+---Fetches runes for a given category, with an option to filter by ownership.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_C_Engraving.GetRunesForCategory)
+---@param category number
+---@param ownedOnly boolean
+---@return EngravingData[] engravingInfo
+function C_Engraving.GetRunesForCategory(category, ownedOnly) end
+
+
+---! DRAFT - NEEDS REVIEW
+---Checks if a category filter exists for engraving. 
+---[Documentation](https://warcraft.wiki.gg/wiki/API_C_Engraving.HasCategoryFilter)
+---@param category number
+---@return boolean result
+function C_Engraving.HasCategoryFilter(category) end
+
+
+---! DRAFT - NEEDS REVIEW
 ---Checks if the equipped filter is enabled.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_C_Engraving.IsEquippedFilterEnabled)
----@return boolean isEnabled
+---@return boolean enabled
 function C_Engraving.IsEquippedFilterEnabled() end
 
 
----Determines if an inventory slot can have an engraving applied to it. 
----[Documentation](https://warcraft.wiki.gg/wiki/API_C_Engraving.IsInventorySlotEngravable)
----@param inventorySlot number
----@return boolean isEngravable
-function C_Engraving.IsInventorySlotEngravable(inventorySlot) end
+---! DRAFT - NEEDS REVIEW
+---Determines if an equipment slot is engravable.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_C_Engraving.IsEquipmentSlotEngravable)
+---@param equipmentSlot number
+---@return boolean result
+function C_Engraving.IsEquipmentSlotEngravable(equipmentSlot) end
+
+
+---Checks if a rune is equipped for a given skill line ability ID.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_C_Engraving.IsRuneEquipped)
+---@param skillLineAbilityID number
+---@return boolean result
+function C_Engraving.IsRuneEquipped(skillLineAbilityID) end
+
 
 ---! DRAFT - NEEDS REVIEW
----Determines if the inventory slot can be engraved by the current rune cast.
+---Determines if a specific inventory slot can be engraved using the current rune.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_C_Engraving.IsInventorySlotEngravableByCurrentRuneCast)
----@param slot number
----@return boolean canEngrave
-function C_Engraving.IsInventorySlotEngravableByCurrentRuneCast(slot) end
+---@param containerIndex number
+---@param slotIndex number
+---@return boolean result
+function C_Engraving.IsInventorySlotEngravableByCurrentRuneCast(containerIndex, slotIndex) end
 
----Checks if the rune spell corresponding to a given spell ID is known.
----[Documentation](https://warcraft.wiki.gg/wiki/API_C_Engraving.IsKnownRuneSpell)
----@param spellID number
----@return boolean isKnown
-function C_Engraving.IsKnownRuneSpell(spellID) end
 
----Check if a rune is equipped for a specific rune type.
----[Documentation](https://warcraft.wiki.gg/wiki/API_C_Engraving.IsRuneEquipped)
----@param runeType number
----@return boolean isEquipped
-function C_Engraving.IsRuneEquipped(runeType) end
-
----Refreshes the list of runes.
----[Documentation](https://warcraft.wiki.gg/wiki/API_C_Engraving.RefreshRunesList)
-function C_Engraving.RefreshRunesList() end
-
----Sets the engraving mode to be enabled or disabled.
+---Enables or disables the engraving mode. 
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_C_Engraving.SetEngravingModeEnabled)
 ---@param enabled boolean
 function C_Engraving.SetEngravingModeEnabled(enabled) end
 
----Sets the search filter for engravings.
----@param searchText string
----@return boolean success
-function C_Engraving.SetSearchFilter(searchText) end
+
+---! DRAFT - NEEDS REVIEW
+---Refreshes the list of runes.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_C_Engraving.RefreshRunesList)
+function C_Engraving.RefreshRunesList() end
+
+
+---Determines if an engraving can be applied to a given inventory slot.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_C_Engraving.IsInventorySlotEngravable)
+---@param containerIndex number
+---@param slotIndex number
+---@return boolean result
+function C_Engraving.IsInventorySlotEngravable(containerIndex, slotIndex) end
+
+
+---! DRAFT - NEEDS REVIEW
+---Checks if a rune spell with the given spellID is known. 
+---[Documentation](https://warcraft.wiki.gg/wiki/API_C_Engraving.IsKnownRuneSpell)
+---@param spellID number
+---@return boolean result
+function C_Engraving.IsKnownRuneSpell(spellID) end
+
+
+---! DRAFT - NEEDS REVIEW
+---Sets the search filter for engraving searches.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_C_Engraving.SetSearchFilter)
+---@param filter string The filter to be set for engraving.
+function C_Engraving.SetSearchFilter(filter) end
+

@@ -1,97 +1,101 @@
 ---@meta
 
+---Leaves an arena team at the specified index.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_ArenaTeamLeave)
+---@param index number
+function ArenaTeamLeave(index) end
 
----! DRAFT - NEEDS REVIEW
----Accepts an invitation to join an arena team.
----[Documentation](https://warcraft.wiki.gg/wiki/API_AcceptArenaTeam)
+---Accepts a pending arena team invitation.<br>[Documentation](https://warcraft.wiki.gg/wiki/API_AcceptArenaTeam)
 function AcceptArenaTeam() end
 
-
-
----Disbands the arena team with the given team ID.
----[Documentation](https://warcraft.wiki.gg/wiki/API_ArenaTeamDisband)
----@param teamID number
-function ArenaTeamDisband(teamID) end
-
-
----! DRAFT - NEEDS REVIEW  
----Invites a player to an arena team by their name.  
----[Documentation](https://warcraft.wiki.gg/wiki/API_ArenaTeamInviteByName)  
----@param teamID number  
----@param name string  
-function ArenaTeamInviteByName(teamID, name) end
-
----Leaves the arena team of the specified team type.
----[Documentation](https://warcraft.wiki.gg/wiki/API_ArenaTeamLeave)
----@param teamType number
-function ArenaTeamLeave(teamType) end
-
----! DRAFT - NEEDS REVIEW
----Retrieves a member's information from an arena team roster.
----@param type number
----@param memberIndex number
----@return string name
----@return number level
----@return number class
----@return number online
----@return number? played
----@return number? won
----@return number? seasonPlayed
----@return number? seasonWon
----@return number? rating
-function ArenaTeamRoster(type, memberIndex) end
-
----! DRAFT - NEEDS REVIEW
----Sets the leader of an arena team by name.
+---Sets the leader of an arena team by specifying the name.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_ArenaTeamSetLeaderByName)
----@param teamID number
----@param newLeader string
-function ArenaTeamSetLeaderByName(teamID, newLeader) end
+---@param index number
+---@param target string
+function ArenaTeamSetLeaderByName(index, target) end
+
+
+---Disbands an Arena Team if the player is the team captain.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_ArenaTeamDisband)
+---@param index number Index of the arena team to delete, can be a value of 1 through 3.
+function ArenaTeamDisband(index) end
+
+
+---Invites a player to an arena team by their name.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_ArenaTeamInviteByName)
+---@param index number The arena team index.
+---@param target string The name of the player to invite.
+function ArenaTeamInviteByName(index, target) end
 
 
 ---! DRAFT - NEEDS REVIEW
----Uninvites a player by name from the arena team.
----[Documentation](https://wowpedia.fandom.com/wiki/API_ArenaTeamUninviteByName)
----@param teamName string
----@param playerName string
-function ArenaTeamUninviteByName(teamName, playerName) end
+---Uninvites a player from an arena team by name.
+---[Documentation](https://warcraft.wiki.gg/wiki/ArenaTeamUninviteByName)
+---@param index number
+---@param target string
+function ArenaTeamUninviteByName(index, target) end
 
 
----Declines an invitation to join an arena team.
+---Requests the arena team information from the server.
+---Because this sends a request to the server, data is not received instantly. You must register and watch for the ARENA_TEAM_ROSTER_UPDATE event.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_ArenaTeamRoster)
+---@param index number Index of the arena team to request information from, 1 through 3.
+function ArenaTeamRoster(index) end
+
+
+---Declines a pending arena team invitation. Only one arena invitation may be pending at any time.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_DeclineArenaTeam)
 function DeclineArenaTeam() end
 
----! DRAFT - NEEDS REVIEW
----Returns information about an arena team.
----[Documentation](https://warcraft.wiki.gg/wiki/API_GetArenaTeam)
----@param index number
----@return string teamName
----@return number teamSize
----@return number teamRating
----@return number gamesPlayed
----@return number gamesWon
----@return number seasonGamesPlayed
----@return number seasonGamesWon
-function GetArenaTeam(index) end
 
----! DRAFT - NEEDS REVIEW  
----Returns the index of an arena team based on its size.  
----[Documentation](https://wowpedia.fandom.com/wiki/API_GetArenaTeamIndexBySize)  
----@param size number The size of the arena team (e.g., 2 for 2v2, 3 for 3v3, etc.)
----@return number index The index of the arena team
+---Returns the index of an arena team for the specified team size.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_GetArenaTeamIndexBySize)
+---@param size number # Team size (number of people), i.e. 2, 3, or 5
+---@return number? index # Arena team index for the specified team size, or nil if not in a team of that size
 function GetArenaTeamIndexBySize(size) end
 
----Returns information about a player in the arena team roster.
+
+---Requests information regarding the arena team that the player is in.
+---[Documentation](https://warcraft.wiki.gg/wiki/API_GetArenaTeam)
+---@param index number Index of the team (1 to 3)
+---@return string? teamName Teams name; nil if not on a team or data not received
+---@return number teamSize Team size (2, 3, or 5)
+---@return number teamRating Teams rating, defaults to 1500 if no games played
+---@return number weekPlayed Total games played this week
+---@return number weekWins Total games won this week
+---@return number seasonPlayed Total games played in current season
+---@return number seasonWins Total games won in current season
+---@return number playerPlayed Total games player participated in this week
+---@return number seasonPlayerPlayed Total games player participated in this season
+---@return number teamRank Teams current ranking, typically updated weekly
+---@return number personalRating Players personal rating with this team
+---@return number backgroundRed Amount of red in the team's banner background
+---@return number backgroundGreen Amount of green in the team's banner background
+---@return number backgroundBlue Amount of blue in the team's banner background
+---@return number emblem Emblem graphic name
+---@return number emblemRed Amount of red in the team's emblem color
+---@return number emblemGreen Amount of green in the team's emblem color
+---@return number emblemBlue Amount of blue in the team's emblem color
+---@return number border Border graphic name
+---@return number borderRed Amount of red in the team's border color
+---@return number borderGreen Amount of green in the team's border color
+---@return number borderBlue Amount of blue in the team's border color
+function GetArenaTeam(index) end
+
+
+---Requests information regarding a specific arena team member, returning various stats such as games played, wins, and personal rating.
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_GetArenaTeamRosterInfo)
----@param teamIndex number
----@param memberIndex number
----@return string name
----@return number rank
----@return number level
----@return number classLocalized
----@return number online
----@return number played
----@return number wons
----@return number seasonPlayed
----@return number seasonWon
-function GetArenaTeamRosterInfo(teamIndex, memberIndex) end
+---@param teamindex number @Index of the team (1-3).
+---@param playerindex number @Index of the team member, starting at 1.
+---@return string name @Name of the player.
+---@return number rank @Rank of the player (0 for captain, 1 for member).
+---@return number level @Player's level.
+---@return string class @Player's class.
+---@return number|nil online @Online status (1 for online, nil for offline).
+---@return number played @Games played this week.
+---@return number win @Games won this week.
+---@return number seasonPlayed @Games played in the current season.
+---@return number seasonWin @Games won in the current season.
+---@return number personalRating @Player's personal rating with this team.
+function GetArenaTeamRosterInfo(teamindex, playerindex) end
+
