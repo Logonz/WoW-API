@@ -1,0 +1,414 @@
+{
+  "QuestFunctions.lua": [
+    "/wiki/API_AbandonQuest",
+    "/wiki/API_AddQuestWatch",
+    "/wiki/API_C_QuestLog.GetQuestInfo",
+    "/wiki/API_CanAbandonQuest",
+    "/wiki/API_GetAbandonQuestItems",
+    "/wiki/API_GetAbandonQuestName",
+    "/wiki/API_GetNumQuestLogEntries",
+    "/wiki/API_GetNumQuestLogRewardCurrencies",
+    "/wiki/API_GetNumQuestWatches",
+    "/wiki/API_GetQuestCurrencyInfo",
+    "/wiki/API_GetQuestGreenRange",
+    "/wiki/API_GetQuestIndexForTimer",
+    "/wiki/API_GetQuestIndexForWatch",
+    "/wiki/API_GetQuestLogGroupNum",
+    "/wiki/API_GetQuestLogIndexByID",
+    "/wiki/API_GetQuestLogIsAutoComplete",
+    "/wiki/API_GetQuestLogPushable",
+    "/wiki/API_GetQuestLogRequiredMoney",
+    "/wiki/API_GetQuestLogRewardCurrencyInfo",
+    "/wiki/API_GetQuestLogSelection",
+    "/wiki/API_GetQuestLogTitle",
+    "/wiki/API_GetQuestTagInfo",
+    "/wiki/API_GetQuestTimers",
+    "/wiki/API_GetQuestsCompleted",
+    "/wiki/API_GetSuggestedGroupNum",
+    "/wiki/API_GetSuperTrackedQuestID",
+    "/wiki/API_IsQuestComplete",
+    "/wiki/API_IsQuestHardWatched",
+    "/wiki/API_IsQuestWatched",
+    "/wiki/API_IsUnitOnQuest",
+    "/wiki/API_IsUnitOnQuestByQuestID",
+    "/wiki/API_QuestPOIGetIconInfo",
+    "/wiki/API_RemoveQuestWatch",
+    "/wiki/API_SelectQuestLogEntry",
+    "/wiki/API_SetAbandonQuest",
+    "/wiki/API_SetSuperTrackedQuestID",
+    "/wiki/API_ShiftQuestWatches",
+    "/wiki/API_SortQuestWatches"
+  ],
+  "ArenaFunctions.lua": [
+    "/wiki/API_AcceptArenaTeam",
+    "/wiki/API_ArenaTeamDisband",
+    "/wiki/API_ArenaTeamInviteByName",
+    "/wiki/API_ArenaTeamLeave",
+    "/wiki/API_ArenaTeamRoster",
+    "/wiki/API_ArenaTeamSetLeaderByName",
+    "/wiki/API_ArenaTeamUninviteByName",
+    "/wiki/API_DeclineArenaTeam",
+    "/wiki/API_GetArenaTeam",
+    "/wiki/API_GetArenaTeamIndexBySize",
+    "/wiki/API_GetArenaTeamRosterInfo"
+  ],
+  "AchievementFunctions.lua": [
+    "/wiki/API_AddTrackedAchievement",
+    "/wiki/API_GetNumTrackedAchievements",
+    "/wiki/API_GetTrackedAchievements",
+    "/wiki/API_IsTrackedAchievement",
+    "/wiki/API_RemoveTrackedAchievement"
+  ],
+  "BattleNetFunctions.lua": [
+    "/wiki/API_BNGetFriendGameAccountInfo",
+    "/wiki/API_BNGetFriendInfo",
+    "/wiki/API_BNGetFriendInfoByID",
+    "/wiki/API_BNGetGameAccountInfo",
+    "/wiki/API_BNGetGameAccountInfoByGUID",
+    "/wiki/API_BNGetNumFriendGameAccounts",
+    "/wiki/API_C_BattleNet.AreHighResTexturesInstalled"
+  ],
+  "PetFunctions.lua": [
+    "/wiki/API_BuyStableSlot",
+    "/wiki/API_ClickStablePet",
+    "/wiki/API_ClosePetStables",
+    "/wiki/API_ConfirmPetUnlearn",
+    "/wiki/API_GetNextStableSlotCost",
+    "/wiki/API_GetNumStableSlots",
+    "/wiki/API_GetPetHappiness",
+    "/wiki/API_GetPetLoyalty",
+    "/wiki/API_GetPetTrainingPoints",
+    "/wiki/API_GetSelectedStablePet",
+    "/wiki/API_GetStablePetFoodTypes",
+    "/wiki/API_GetStablePetInfo",
+    "/wiki/API_HasPetSpells",
+    "/wiki/API_PetAbandon",
+    "/wiki/API_PetCanBeRenamed",
+    "/wiki/API_PetRename",
+    "/wiki/API_PickupStablePet",
+    "/wiki/API_SetPetStablePaperdoll"
+  ],
+  "AreaPoiInfoFunctions.lua": [
+    "/wiki/API_C_AreaPoiInfo.GetAreaPOITimeLeft"
+  ],
+  "BarberShopFunctions.lua": [
+    "/wiki/API_C_BarberShop.CycleCharCustomization",
+    "/wiki/API_C_BarberShop.GetBarbersChoiceCost",
+    "/wiki/API_C_BarberShop.GetCustomizationTypeInfo",
+    "/wiki/API_C_BarberShop.IsValidCustomizationType",
+    "/wiki/API_C_BarberShop.IsViewingNativeSex",
+    "/wiki/API_C_BarberShop.IsViewingVisibleSex",
+    "/wiki/API_C_BarberShop.SetPortraitTexture",
+    "/wiki/API_ConfirmBarbersChoice"
+  ],
+  "ChatInfoFunctions.lua": [
+    "/wiki/API_C_ChatInfo.CanReportPlayer",
+    "/wiki/API_C_ChatInfo.ReportServerLag"
+  ],
+  "ContainerFunctions.lua": [
+    "/wiki/API_C_Container.GetContainerItemGems",
+    "/wiki/API_C_Container.IsBagSlotFlagEnabledOnOtherBankBags"
+  ],
+  "EngravingFunctions.lua": [
+    "/wiki/API_C_Engraving.AddCategoryFilter",
+    "/wiki/API_C_Engraving.AddExclusiveCategoryFilter",
+    "/wiki/API_C_Engraving.CastRune",
+    "/wiki/API_C_Engraving.ClearAllCategoryFilters",
+    "/wiki/API_C_Engraving.ClearCategoryFilter",
+    "/wiki/API_C_Engraving.ClearExclusiveCategoryFilter",
+    "/wiki/API_C_Engraving.EnableEquippedFilter",
+    "/wiki/API_C_Engraving.GetCurrentRuneCast",
+    "/wiki/API_C_Engraving.GetEngravingModeEnabled",
+    "/wiki/API_C_Engraving.GetExclusiveCategoryFilter",
+    "/wiki/API_C_Engraving.GetNumRunesKnown",
+    "/wiki/API_C_Engraving.GetRuneCategories",
+    "/wiki/API_C_Engraving.GetRuneForEquipmentSlot",
+    "/wiki/API_C_Engraving.GetRuneForInventorySlot",
+    "/wiki/API_C_Engraving.GetRunesForCategory",
+    "/wiki/API_C_Engraving.HasCategoryFilter",
+    "/wiki/API_C_Engraving.IsEngravingEnabled",
+    "/wiki/API_C_Engraving.IsEquipmentSlotEngravable",
+    "/wiki/API_C_Engraving.IsEquippedFilterEnabled",
+    "/wiki/API_C_Engraving.IsInventorySlotEngravable",
+    "/wiki/API_C_Engraving.IsInventorySlotEngravableByCurrentRuneCast",
+    "/wiki/API_C_Engraving.IsKnownRuneSpell",
+    "/wiki/API_C_Engraving.IsRuneEquipped",
+    "/wiki/API_C_Engraving.RefreshRunesList",
+    "/wiki/API_C_Engraving.SetEngravingModeEnabled",
+    "/wiki/API_C_Engraving.SetSearchFilter"
+  ],
+  "GameRulesFunctions.lua": [
+    "/wiki/API_C_GameRules.IsHardcoreActive",
+    "/wiki/API_C_GameRules.IsSelfFoundAllowed"
+  ],
+  "ItemFunctions.lua": [
+    "/wiki/API_C_Item.IsDressableItem",
+    "/wiki/API_GetInventoryItemGems",
+    "/wiki/API_GetItemStats"
+  ],
+  "LootHistoryFunctions.lua": [
+    "/wiki/API_C_LootHistory.GetItem",
+    "/wiki/API_C_LootHistory.GetPlayerInfo"
+  ],
+  "MacroFunctions.lua": [
+    "/wiki/API_C_Macro.GetNumIcons"
+  ],
+  "MapFunctions.lua": [
+    "/wiki/API_C_Map.GetBountySetIDForMap"
+  ],
+  "PlayerInfoFunctions.lua": [
+    "/wiki/API_C_PlayerInfo.IsXPUserDisabled"
+  ],
+  "PvPFunctions.lua": [
+    "/wiki/API_C_PvP.GetHolidayBGLossRewards",
+    "/wiki/API_C_PvP.GetHolidayBGRewards",
+    "/wiki/API_C_PvP.GetRandomBGLossRewards",
+    "/wiki/API_C_PvP.GetWorldPvPWaitTime",
+    "/wiki/API_GetInspectPVPRankProgress",
+    "/wiki/API_GetPVPLastWeekStats",
+    "/wiki/API_GetPVPRankInfo",
+    "/wiki/API_GetPVPRankProgress",
+    "/wiki/API_GetPVPThisWeekStats",
+    "/wiki/API_HasInspectHonorData",
+    "/wiki/API_IsRatedBattleground",
+    "/wiki/API_RequestInspectHonorData",
+    "/wiki/API_UnitPVPRank"
+  ],
+  "ReforgeFunctions.lua": [
+    "/wiki/API_C_Reforge.CloseReforge",
+    "/wiki/API_C_Reforge.GetDestinationReforgeStats",
+    "/wiki/API_C_Reforge.GetNumReforgeOptions",
+    "/wiki/API_C_Reforge.GetReforgeItemInfo",
+    "/wiki/API_C_Reforge.GetReforgeItemStats",
+    "/wiki/API_C_Reforge.GetReforgeOptionInfo",
+    "/wiki/API_C_Reforge.GetSourceReforgeStats",
+    "/wiki/API_C_Reforge.ReforgeItem",
+    "/wiki/API_C_Reforge.SetReforgeFromCursorItem"
+  ],
+  "SeasonsFunctions.lua": [
+    "/wiki/API_C_Seasons.GetActiveSeason",
+    "/wiki/API_C_Seasons.HasActiveSeason"
+  ],
+  "StorePublicFunctions.lua": [
+    "/wiki/API_C_StorePublic.HasPurchaseableProducts"
+  ],
+  "UIWidgetManagerFunctions.lua": [
+    "/wiki/API_C_UIWidgetManager.GetTextureWithStateVisualizationInfo"
+  ],
+  "AuctionFunctions.lua": [
+    "/wiki/API_CanSendAuctionQuery",
+    "/wiki/API_CancelSell",
+    "/wiki/API_ClickAuctionSellItemButton",
+    "/wiki/API_CloseAuctionHouse",
+    "/wiki/API_GetAuctionItemBattlePetInfo",
+    "/wiki/API_GetAuctionItemInfo",
+    "/wiki/API_GetAuctionItemLink",
+    "/wiki/API_GetAuctionItemSubClasses",
+    "/wiki/API_GetAuctionItemTimeLeft",
+    "/wiki/API_GetAuctionSellItemInfo",
+    "/wiki/API_GetNumAuctionItems",
+    "/wiki/API_GetOwnerAuctionItems",
+    "/wiki/API_IsAuctionSortReversed",
+    "/wiki/API_PlaceAuctionBid",
+    "/wiki/API_PostAuction",
+    "/wiki/API_QueryAuctionItems",
+    "/wiki/API_SetSelectedAuctionItem",
+    "/wiki/API_SortAuctionItems",
+    "/wiki/API_SortAuctionSetSort",
+    "/wiki/API_StartAuction"
+  ],
+  "GeneralFunctions.lua": [
+    "/wiki/API_CancelTrackingBuff",
+    "/wiki/API_CastingInfo",
+    "/wiki/API_ConfirmBinder",
+    "/wiki/API_CursorCanGoInSlot",
+    "/wiki/API_FillLocalizedClassList",
+    "/wiki/API_GMSubmitBug",
+    "/wiki/API_GMSubmitSuggestion",
+    "/wiki/API_GetArmorPenetration",
+    "/wiki/API_GetCurrentResolution",
+    "/wiki/API_GetEclipseDirection",
+    "/wiki/API_GetExpertisePercent",
+    "/wiki/API_GetInviteReferralInfo",
+    "/wiki/API_GetScreenResolutions",
+    "/wiki/API_IsPlayerAttacking",
+    "/wiki/API_SetScreenResolution",
+    "/wiki/API_ShouldKnowUnitHealth",
+    "/wiki/API_ShowCloak",
+    "/wiki/API_ShowHelm",
+    "/wiki/API_ShowingCloak",
+    "/wiki/API_ShowingHelm"
+  ],
+  "ChannelFunctions.lua": [
+    "/wiki/API_ChannelInfo"
+  ],
+  "BankFunctions.lua": [
+    "/wiki/API_CloseBankFrame",
+    "/wiki/API_GetFirstBagBankSlotIndex"
+  ],
+  "TradeSkillFunctions.lua": [
+    "/wiki/API_CloseTradeSkill",
+    "/wiki/API_DoTradeSkill",
+    "/wiki/API_ExpandTradeSkillSubClass",
+    "/wiki/API_GetFirstTradeSkill",
+    "/wiki/API_GetNumTradeSkills",
+    "/wiki/API_GetTradeSkillDescription",
+    "/wiki/API_GetTradeSkillInfo",
+    "/wiki/API_GetTradeSkillInvSlotFilter",
+    "/wiki/API_GetTradeSkillInvSlots",
+    "/wiki/API_GetTradeSkillItemLink",
+    "/wiki/API_GetTradeSkillItemStats",
+    "/wiki/API_GetTradeSkillLine",
+    "/wiki/API_GetTradeSkillListLink",
+    "/wiki/API_GetTradeSkillNumMade",
+    "/wiki/API_GetTradeSkillNumReagents",
+    "/wiki/API_GetTradeSkillReagentInfo",
+    "/wiki/API_GetTradeSkillReagentItemLink",
+    "/wiki/API_GetTradeSkillRecipeLink",
+    "/wiki/API_GetTradeSkillSelectionIndex",
+    "/wiki/API_GetTradeSkillSubClassFilter",
+    "/wiki/API_GetTradeSkillSubClasses",
+    "/wiki/API_GetTradeSkillTools",
+    "/wiki/API_GetTradeskillRepeatCount",
+    "/wiki/API_IsTradeSkillLinked",
+    "/wiki/API_SetTradeSkillInvSlotFilter",
+    "/wiki/API_SetTradeSkillItemLevelFilter",
+    "/wiki/API_SetTradeSkillSubClassFilter",
+    "/wiki/API_StopTradeSkillRepeat"
+  ],
+  "FactionFunctions.lua": [
+    "/wiki/API_CollapseFactionHeader",
+    "/wiki/API_ExpandFactionHeader",
+    "/wiki/API_FactionToggleAtWar",
+    "/wiki/API_GetFactionInfo",
+    "/wiki/API_GetFactionInfoByID",
+    "/wiki/API_GetGuildFactionInfo",
+    "/wiki/API_GetNumFactions",
+    "/wiki/API_GetWatchedFactionInfo",
+    "/wiki/API_IsFactionInactive",
+    "/wiki/API_SetFactionActive",
+    "/wiki/API_SetFactionInactive",
+    "/wiki/API_SetWatchedFactionIndex"
+  ],
+  "SkillFunctions.lua": [
+    "/wiki/API_CollapseSkillHeader",
+    "/wiki/API_CollapseTrainerSkillLine",
+    "/wiki/API_ExpandSkillHeader",
+    "/wiki/API_ExpandTrainerSkillLine",
+    "/wiki/API_GetNumSkillLines",
+    "/wiki/API_GetSelectedSkill",
+    "/wiki/API_GetSkillLineInfo",
+    "/wiki/API_SetSelectedSkill"
+  ],
+  "SpellFunctions.lua": [
+    "/wiki/API_DoesSpellExist",
+    "/wiki/API_GetCurrentLevelSpells",
+    "/wiki/API_GetNumSpellTabs",
+    "/wiki/API_GetSpellAutocast",
+    "/wiki/API_GetSpellBookItemInfo",
+    "/wiki/API_GetSpellBookItemName",
+    "/wiki/API_GetSpellBookItemTexture",
+    "/wiki/API_GetSpellCharges",
+    "/wiki/API_GetSpellCooldown",
+    "/wiki/API_GetSpellCount",
+    "/wiki/API_GetSpellDescription",
+    "/wiki/API_GetSpellInfo",
+    "/wiki/API_GetSpellLink",
+    "/wiki/API_GetSpellLossOfControlCooldown",
+    "/wiki/API_GetSpellPowerCost",
+    "/wiki/API_GetSpellTabInfo",
+    "/wiki/API_GetSpellTexture",
+    "/wiki/API_IsAttackSpell",
+    "/wiki/API_IsCurrentSpell",
+    "/wiki/API_IsPassiveSpell",
+    "/wiki/API_IsSpellInRange",
+    "/wiki/API_IsUsableSpell",
+    "/wiki/API_PickupSpell",
+    "/wiki/API_PickupSpellBookItem"
+  ],
+  "CurrencyFunctions.lua": [
+    "/wiki/API_ExpandCurrencyList",
+    "/wiki/API_GetBackpackCurrencyInfo",
+    "/wiki/API_GetCurrencyInfo",
+    "/wiki/API_GetCurrencyLink",
+    "/wiki/API_GetCurrencyListInfo",
+    "/wiki/API_GetCurrencyListSize",
+    "/wiki/API_GetNumRewardCurrencies",
+    "/wiki/API_PickupCurrency",
+    "/wiki/API_SetCurrencyBackpack",
+    "/wiki/API_SetCurrencyUnused"
+  ],
+  "TalentFunctions.lua": [
+    "/wiki/API_GetActiveTalentGroup",
+    "/wiki/API_GetNextTalentLevel",
+    "/wiki/API_GetNumTalentGroups",
+    "/wiki/API_GetNumTalentTabs",
+    "/wiki/API_GetNumTalents",
+    "/wiki/API_GetPrimaryTalentTree",
+    "/wiki/API_GetTalentGroupRole",
+    "/wiki/API_GetTalentPrereqs",
+    "/wiki/API_GetTalentTabInfo",
+    "/wiki/API_GetTalentTreeRoles",
+    "/wiki/API_GetUnspentTalentPoints",
+    "/wiki/API_SetActiveTalentGroup",
+    "/wiki/API_SetPrimaryTalentTree"
+  ],
+  "BattlefieldFunctions.lua": [
+    "/wiki/API_GetBattlefieldFlagPosition",
+    "/wiki/API_GetBattlefieldInstanceInfo",
+    "/wiki/API_GetBattlefieldStatInfo",
+    "/wiki/API_GetNumBattlefieldStats",
+    "/wiki/API_GetNumBattlefields",
+    "/wiki/API_GetSelectedBattlefield",
+    "/wiki/API_InActiveBattlefield",
+    "/wiki/API_SetSelectedBattlefield"
+  ],
+  "CompanionFunctions.lua": [
+    "/wiki/API_GetCompanionCooldown"
+  ],
+  "CraftFunctions.lua": [
+    "/wiki/API_GetCraftDescription",
+    "/wiki/API_GetCraftDisplaySkillLine",
+    "/wiki/API_GetCraftInfo",
+    "/wiki/API_GetCraftItemLink",
+    "/wiki/API_GetCraftName",
+    "/wiki/API_GetCraftNumReagents",
+    "/wiki/API_GetCraftReagentInfo",
+    "/wiki/API_GetCraftReagentItemLink",
+    "/wiki/API_GetCraftRecipeLink",
+    "/wiki/API_GetCraftSkillLine",
+    "/wiki/API_GetCraftSpellFocus",
+    "/wiki/API_GetNumCrafts"
+  ],
+  "MerchantFunctions.lua": [
+    "/wiki/API_GetMerchantItemInfo"
+  ],
+  "UnsortedFunctions.lua": [
+    "/wiki/API_GetRuneType"
+  ],
+  "TrackingFunctions.lua": [
+    "/wiki/API_GetTrackingTexture"
+  ],
+  "TrainerFunctions.lua": [
+    "/wiki/API_IsTrainerServiceLearnSpell"
+  ],
+  "PartyFunctions.lua": [
+    "/wiki/API_LeaveParty",
+    "/wiki/API_InviteUnit",
+    "/wiki/API_ConvertToParty",
+    "/wiki/API_ConvertToRaid",
+    "/wiki/API_RequestInviteFromUnit"
+  ],
+  "UnitFunctions.lua": [
+    "/wiki/API_UnitAttackBothHands",
+    "/wiki/API_UnitAura",
+    "/wiki/API_UnitBuff",
+    "/wiki/API_UnitCharacterPoints",
+    "/wiki/API_UnitDebuff",
+    "/wiki/API_UnitDefense",
+    "/wiki/API_UnitInPhase",
+    "/wiki/API_UnitIsCivilian",
+    "/wiki/API_UnitRangedAttack",
+    "/wiki/API_UnitResistance"
+  ]
+}
