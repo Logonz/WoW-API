@@ -54,7 +54,7 @@ add_function_hint_def = types.FunctionDeclaration(
 Use \\n between each line of the type hint but not at the end.
 # Example 1:
 
-default_api.Add_Table_Hint(anchor_line = "function ExtractLinkData(link)", type_hint_multiline = "--- Extracts the link data from a link.\\n---[FrameXML](https://www.townlong-yak.com/framexml/go/ExtractLinkData)\\n---@param link string\\n---@return string? linkType\\n---@return string? linkData")
+default_api.Add_Function_Hint(anchor_line = "function ExtractLinkData(link)", type_hint_multiline = "--- Extracts the link data from a link.\\n---[FrameXML](https://www.townlong-yak.com/framexml/go/ExtractLinkData)\\n---@param link string\\n---@return string? linkType\\n---@return string? linkData")
 
 # Example 2:
 
