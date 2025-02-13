@@ -23,8 +23,8 @@ model = "gemini-2.0-flash-lite-preview-02-05"
 
 system_prompt = f"""You are an expert at writing Lua Language Server compatible Type hints:
 
-
 ## Documentation about Lua Types
+
 <lua_types>
 {LuaTypesContent}
 </lua_types>
@@ -42,6 +42,7 @@ Explanation: These keywords are banned and cannot be used as parameters.
 Always have the function be one line, this is part of a file that are ---@meta definitions and do not contain the function body.
 
 # Steps to follow:
+
 1. You will get RAW HTML content your job is to convert it to Lua Type hints.
 2. Never include the 'API_' prefix in the function name.
 4. Always include all the parameters and return types. Omit if no parameters or return types.
@@ -49,10 +50,183 @@ Always have the function be one line, this is part of a file that are ---@meta d
 6. Write a summary of the function in the first line. Using <br> to separate lines, like in the examples.
 7. If there are additional details about the function, focus only on the the most important parts and keep it SHORT.
 
+# Typing rules:
+
+- The type float is not used in Lua, use number instead.
+- Always use lowercase for primitives. The primitive types are: number, string, boolean, table, function, userdata, thread, and nil.
+- If a parameter is optional, use the nilable type by adding a '?' after the type. Example: number?
+- When there are multiple returns as vararg (a, b, ...), use ... as name and add "a, b, ..." to the description to denote the multiple returns
+- Do not add the [ ] to the param_name. The [ ] is used to denote optional parameters. The nilable type is denoted by adding a '?' after the type.
+
+# Function Signature:
+
+- Multiple variants of a function should be added separately. Example: GetItemInfo(itemID) and GetItemInfo(itemName) should be added as two separate functions.
+- Always have valid Lua syntax in the function signature i.e, 'AddQuestWatch(questIndex [, watchTime])' is not valid Lua syntax, it should be 'AddQuestWatch(questIndex, watchTime)'.
+
+
+# Examples of Tool Outputs in Python Objects:
+
+## Example 1:
+
+### Input (Partial example):
+
+<div class="mw-parser-output"><div style="float:right; margin-left:1em; margin-left:max(1em, 1.5%); margin-bottom:0.2em;">
+[...]
+<p>Returns the hyperlink for a spell.
+</p>
+<pre>link, spellId = GetSpellLink(spell]
+              = GetSpellLink(index, bookType)
+</pre>
+[...]
+<dd><dl><dt>spell</dt>
+  <dd><font color="#ecbc2a">number</font>|<font color="#ecbc2a">string</font> - Spell ID or Name. When passing a name requires the spell to be in your <a href="/wiki/Spellbook" title="Spellbook">Spellbook</a>.</dd></dl></dd>
+[...]
+<dd><dl><dt>link</dt>
+<dd><font color="#ecbc2a">string</font>&nbsp;: <a href="/wiki/Hyperlinks#spell" title="Hyperlinks">spellLink</a></dd>
+<dt>spellID</dt>
+<dd><font color="#ecbc2a">number</font></dd></dl></dd>
+[...]
+</div>
+
+### Output:
+
+args={{'for_function_signature': 'GetSpellLink(spell)', "summary": 'Returns the hyperlink for a spell.'}} name='Add_summary'
+args={{'for_function_signature': 'GetSpellLink(spell)',"param_description": 'Spell ID of a spell. When passing a name requires the spell to be in your Spellbook.', 'param_name': 'spell', 'param_type': 'number|string'}} name='Add_param'
+args={{"for_function_signature": 'GetSpellLink(spell)', 'return_type': 'spellLink', 'return_description': '', 'return_name': 'link'}} name='Add_return'
+args={{"for_function_signature": 'GetSpellLink(spell)', 'return_type': 'number', 'return_description': '', 'return_name': 'spellID'}} name='Add_return'
+args={{"for_function_signature": 'GetSpellLink(index, bookType)', 'summary': 'Returns the hyperlink for a spell.'}} name='Add_summary'
+args={{"for_function_signature": 'GetSpellLink(index, bookType)', 'param_description': 'Spellbook slot index, ranging from 1 through the total number of spells across all tabs and pages.', 'param_name': 'index', 'param_type': 'number'}} name='Add_param'
+args={{"for_function_signature": 'GetSpellLink(index, bookType)', "param_description": 'BOOKTYPE_SPELL or BOOKTYPE_PET depending on if you wish to query the player or pet spellbook.', 'param_name': 'bookType', 'param_type': 'string'}} name='Add_param'
+args={{"for_function_signature": 'GetSpellLink(index, bookType)', 'return_type': 'string', 'return_description': 'spellLink', "return_name": 'link'}} name='Add_return'
+args={{"for_function_signature": 'GetSpellLink(index, bookType)', 'return_type': 'number', 'return_description': '', 'return_name': 'spellID'}} name='Add_return'
+
+## Example 2:
+
+### Input (Partial example):
+
+<div class="mw-parser-output"><div style="float:right; margin-left:1em; margin-left:max(1em, 1.5%); margin-bottom:0.2em;">
+[...]
+<p>Returns true if a (pet) spell is autocastable. 
+</p>
+<pre>autocastable, autostate = GetSpellAutocast("spellName" or spellId, bookType)
+</pre>
+[...]
+<dd><dl><dt>spellName</dt>
+<dd><font color="#ecbc2a">string</font> - the name of the spell.</dd>
+<dt>spellId</dt>
+<dd><font color="#ecbc2a">number</font> - the offset (position) of spell in spellbook. SpellId can change when you learn new spells.</dd>
+<dt>bookType</dt>
+<dd><font color="#ecbc2a">string</font> - Either BOOKTYPE_SPELL ("spell") or BOOKTYPE_PET ("pet").</dd></dl></dd>
+[...]
+<dd><dl><dt>autocastable</dt>
+<dd><font color="#ecbc2a">number</font> - whether a spell is autocastable.</dd>
+<dd>Returns 1 if the spell is autocastable, nil otherwise.</dd>
+<dt>autostate</dt>
+<dd><font color="#ecbc2a">number</font> - whether a spell is currently set to autocast.</dd>
+<dd>Returns 1 if the spell is currently set for autocast, nil otherwise.</dd></dl></dd>
+[...]
+</div>
+
+### Output:
+
+args={{'for_function_signature': 'GetSpellAutocast(spellName, bookType)', 'summary': 'Returns true if a (pet) spell is autocastable.'}} name='Add_summary'
+args={{'for_function_signature': 'GetSpellAutocast(spellName, bookType)', 'param_description': 'The name of the spell.', 'param_name': 'spellName', 'param_type': 'string'}} name='Add_param'
+args={{'for_function_signature': 'GetSpellAutocast(spellName, bookType)', 'param_description': 'Either BOOKTYPE_SPELL ("spell") or BOOKTYPE_PET ("pet").', 'param_name': 'bookType', 'param_type': 'string'}} name='Add_param'
+args={{'for_function_signature': 'GetSpellAutocast(spellName, bookType)', 'return_description': 'whether a spell is autocastable.', 'return_name': 'autocastable', 'return_type': 'number?'}} name='Add_return'
+args={{'for_function_signature': 'GetSpellAutocast(spellName, bookType)', 'return_description': 'whether a spell is currently set to autocast.', 'return_name': 'autostate', 'return_type': 'number?'}} name='Add_return'
+args={{'for_function_signature': 'GetSpellAutocast(spellId, bookType)', 'summary': 'Returns true if a (pet) spell is autocastable.'}} name='Add_summary'
+args={{'for_function_signature': 'GetSpellAutocast(spellId, bookType)', 'param_description': 'The offset (position) of spell in spellbook. SpellId can change when you learn new spells.', 'param_name': 'spellId', 'param_type': 'number'}} name='Add_param'
+args={{'for_function_signature': 'GetSpellAutocast(spellId, bookType)', 'param_description': 'Either BOOKTYPE_SPELL ("spell") or BOOKTYPE_PET ("pet").', 'param_name': 'bookType', 'param_type': 'string'}} name='Add_param'
+args={{'for_function_signature': 'GetSpellAutocast(spellId, bookType)', 'return_description': 'whether a spell is autocastable.', 'return_name': 'autocastable', 'return_type': 'number?'}} name='Add_return'
+args={{'for_function_signature': 'GetSpellAutocast(spellId, bookType)', 'return_description': 'whether a spell is currently set to autocast.', 'return_name': 'autostate', 'return_type': 'number?'}} name='Add_return'
+
+## Example 3:
+
+### Input (Partial example):
+<div class="mw-parser-output"><div style="float:right; margin-left:1em; margin-left:max(1em, 1.5%); margin-bottom:0.2em;">
+[...]
+<p>Returns information about a loss-of-control cooldown affecting a spell.
+</p>
+<pre>start, duration = GetSpellLossOfControlCooldown(spellSlot[, bookType] or spellName or spellID)
+</pre>
+[...]
+<dl><dd><dl><dt>spellSlot</dt>
+<dd><font color="#ecbc2a">number</font> - spell book slot index, ascending from 1.</dd>
+<dt>bookType</dt>
+<dd><font color="#ecbc2a">string</font> - spell book type token, e.g. "spell" from player's spell book.</dd></dl></dd></dl>
+<p>or
+</p>
+<dl><dd><dl><dt>spellName</dt>
+<dd><font color="#ecbc2a">string</font> - name of a spell in the player's spell book.</dd></dl></dd></dl>
+<p>or
+</p>
+<dl><dd><dl><dt>spellID</dt>
+<dd><font color="#ecbc2a">number</font> - spell ID of a spell accessible to the player.</dd></dl></dd></dl>
+[...]
+<dd><dl><dt>start</dt>
+<dd><font color="#ecbc2a">number</font> - time at which the loss-of-control cooldown began, per <a href="/wiki/API_GetTime" title="API GetTime">GetTime</a>.</dd>
+<dt>duration</dt>
+<dd><font color="#ecbc2a">number</font> - duration of the loss-of-control cooldown in seconds; 0 if the spell is not currently affected by a loss-of-control cooldown.</dd></dl></dd>
+[...]
+</div>
+
+### Reasoning:
+The function `GetSpellLossOfControlCooldown` takes a mandatory `spellSlot` argument and one additional optional argument, which can be either `bookType`, `spellName`, or `spellID`. This results in four valid parameter combinations. To accurately document the flexibility of the API and ensure clarity in parameter descriptions and return values, four distinct function signatures were created, each representing a valid way to call the function.
+
+### Output:
+args={{'for_function_signature': 'GetSpellLossOfControlCooldown(spellSlot)', 'summary': 'Returns information about a loss-of-control cooldown affecting a spell.'}} name='Add_summary'
+args={{'for_function_signature': 'GetSpellLossOfControlCooldown(spellSlot)', 'param_description': 'spell book slot index, ascending from 1.', 'param_name': 'spellSlot', 'param_type': 'number'}} name='Add_param'
+args={{'for_function_signature': 'GetSpellLossOfControlCooldown(spellSlot)', 'return_description': 'time at which the loss-of-control cooldown began, per GetTime.', 'return_name': 'start', 'return_type': 'number'}} name='Add_return'
+args={{'for_function_signature': 'GetSpellLossOfControlCooldown(spellSlot)', 'return_description': 'duration of the loss-of-control cooldown in seconds; 0 if the spell is not currently affected by a loss-of-control cooldown.', 'return_name': 'duration', 'return_type': 'number'}} name='Add_return'
+
+args={{'for_function_signature': 'GetSpellLossOfControlCooldown(spellSlot, bookType)', 'summary': 'Returns information about a loss-of-control cooldown affecting a spell.'}} name='Add_summary'
+args={{'for_function_signature': 'GetSpellLossOfControlCooldown(spellSlot, bookType)', 'param_description': 'spell book slot index, ascending from 1.', 'param_name': 'spellSlot', 'param_type': 'number'}} name='Add_param'
+args={{'for_function_signature': 'GetSpellLossOfControlCooldown(spellSlot, bookType)', 'param_description': 'spell book type token, e.g. "spell" from player\'s spell book.', 'param_name': 'bookType', 'param_type': 'string'}} name='Add_param'
+args={{'for_function_signature': 'GetSpellLossOfControlCooldown(spellSlot, bookType)', 'return_description': 'time at which the loss-of-control cooldown began, per GetTime.', 'return_name': 'start', 'return_type': 'number'}} name='Add_return'
+args={{'for_function_signature': 'GetSpellLossOfControlCooldown(spellSlot, bookType)', 'return_description': 'duration of the loss-of-control cooldown in seconds; 0 if the spell is not currently affected by a loss-of-control cooldown.', 'return_name': 'duration', 'return_type': 'number'}} name='Add_return'
+
+args={{'for_function_signature': 'GetSpellLossOfControlCooldown(spellSlot, spellName)', 'summary': 'Returns information about a loss-of-control cooldown affecting a spell.'}} name='Add_summary'
+args={{'for_function_signature': 'GetSpellLossOfControlCooldown(spellSlot, spellName)', 'param_description': 'spell book slot index, ascending from 1.', 'param_name': 'spellSlot', 'param_type': 'number'}} name='Add_param'
+args={{'for_function_signature': 'GetSpellLossOfControlCooldown(spellSlot, spellName)', 'param_description': 'name of a spell in the player\'s spell book.', 'param_name': 'spellName', 'param_type': 'string'}} name='Add_param'
+args={{'for_function_signature': 'GetSpellLossOfControlCooldown(spellSlot, spellName)', 'return_description': 'time at which the loss-of-control cooldown began, per GetTime.', 'return_name': 'start', 'return_type': 'number'}} name='Add_return'
+args={{'for_function_signature': 'GetSpellLossOfControlCooldown(spellSlot, spellName)', 'return_description': 'duration of the loss-of-control cooldown in seconds; 0 if the spell is not currently affected by a loss-of-control cooldown.', 'return_name': 'duration', 'return_type': 'number'}} name='Add_return'
+
+args={{'for_function_signature': 'GetSpellLossOfControlCooldown(spellSlot, spellID)', 'summary': 'Returns information about a loss-of-control cooldown affecting a spell.'}} name='Add_summary'
+args={{'for_function_signature': 'GetSpellLossOfControlCooldown(spellSlot, spellID)', 'param_description': 'spell book slot index, ascending from 1.', 'param_name': 'spellSlot', 'param_type': 'number'}} name='Add_param'
+args={{'for_function_signature': 'GetSpellLossOfControlCooldown(spellSlot, spellID)', 'param_description': 'spell ID of a spell accessible to the player.', 'param_name': 'spellID', 'param_type': 'number'}} name='Add_param'
+args={{'for_function_signature': 'GetSpellLossOfControlCooldown(spellSlot, spellID)', 'return_description': 'time at which the loss-of-control cooldown began, per GetTime.', 'return_name': 'start', 'return_type': 'number'}} name='Add_return'
+args={{'for_function_signature': 'GetSpellLossOfControlCooldown(spellSlot, spellID)', 'return_description': 'duration of the loss-of-control cooldown in seconds; 0 if the spell is not currently affected by a loss-of-control cooldown.', 'return_name': 'duration', 'return_type': 'number'}} name='Add_return'
+
+## Example 4:
+
+### Input (Partial example):
+<div class="mw-parser-output"><div style="float:right; margin-left:1em; margin-left:max(1em, 1.5%); margin-bottom:0.2em;">
+[...]
+<p>Needs summary.
+</p>
+<pre>known, max = C_Engraving.GetNumRunesKnown([equipmentSlot])</pre>
+<h2><span class="mw-headline" id="Arguments">Arguments</span></h2>
+<dl><dd><dl><dt>equipmentSlot</dt>
+<dd><font color="#ecbc2a">number</font><span title="nilable">?</span></dd></dl></dd></dl>
+<h2><span class="mw-headline" id="Returns">Returns</span></h2>
+<dl><dd><dl><dt>known</dt>
+<dd><font color="#ecbc2a">number</font></dd>
+<dt>max</dt>
+<dd><font color="#ecbc2a">number</font></dd></dl></dd></dl>
+[...]
+</div>
+
+### Output:
+
+args={{'for_function_signature': 'C_Engraving.GetNumRunesKnown(equipmentSlot)', 'summary': 'Returns the number of runes known and the maximum number of runes available, optionally for a specified equipment slot.'}} name='Add_summary'
+args={{'for_function_signature': 'C_Engraving.GetNumRunesKnown(equipmentSlot)', 'param_description': 'optional equipment slot index.', 'param_name': 'equipmentSlot', 'param_type': 'number?'}} name='Add_param'
+args={{'for_function_signature': 'C_Engraving.GetNumRunesKnown(equipmentSlot)', 'return_description': 'number of runes known.', 'return_name': 'known', 'return_type': 'number'}} name='Add_return'
+args={{'for_function_signature': 'C_Engraving.GetNumRunesKnown(equipmentSlot)', 'return_description': 'maximum number of runes available.', 'return_name': 'max', 'return_type': 'number'}} name='Add_return'
 
 
 ONLY RESPOND WITH tool_calls
 """
+# - If a function parameter can accept multiple types (e.g., string or number), use the format "type1|type2". Example: string|number. Additionally, if two parameters serve the same purpose but accept different types (e.g., spellName and spellId), consolidate them into a single parameter with a descriptive name (spellNameOrId in this case).
 
 # 8. ALWAYS include the documentation link. NEVER use ---@see - PS. ONLY USE 'https://warcraft.wiki.gg' NO OTHER LINKS ALLOWED
 # 9. Always respond with the function signature, if you are unsure add a comment on the first line '---! DRAFT - NEEDS REVIEW'
@@ -88,11 +262,50 @@ add_summary_hint_def = types.FunctionDeclaration(
 <p>Retrieves tag information about the quest.</p>
 <pre>tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, displayTimeLeft = GetQuestTagInfo(questID)</pre>
 [...]
+<dd><dl><dt>questID</dt>
+<dd><font color="#ecbc2a">number</font> - The ID of the quest to retrieve the tag info for.</dd></dl></dd>
+[...]
+<dd><dl><dt>tagID</dt>
+<dd><font color="#ecbc2a">number</font> - the tagID, nil if quest is not tagged</dd>
+<dt>tagName</dt>
+<dd><font color="#ecbc2a">string</font> - human readable representation of the tagID, nil if quest is not tagged</dd>
+<dt>worldQuestType</dt>
+<dd><font color="#ecbc2a">number</font> - type of world quest, or nil if not world quest</dd>
+<dt>rarity</dt>
+<dd><font color="#ecbc2a">number</font> - the rarity of the quest (used for world quests)</dd>
+<dt>isElite</dt>
+<dd><font color="#ecbc2a">boolean</font> - is this an elite quest?  (used for world quests)</dd>
+<dt>tradeskillLineIndex</dt>
+<dd>tradeskillID if this is a profession quest  (used to determine which profession icon to display for world quests)</dd>
+<dt>displayTimeLeft</dt>
+<dd>?</dd></dl></dd>
+[...]
 </div>
 
 # Output:
 
 default_api.Add_summary_Hint(summary = "Retrieves tag information about the quest.", for_function_signature = "GetQuestTagInfo(questID)")
+
+# Example 2:
+
+## Input (Partial example):
+
+<div id="mw-content-text" class="mw-body-content mw-content-ltr" lang="en" dir="ltr"><div class="mw-parser-output">
+[...]
+<p>Retrieves the number of runes known, optionally for a specified equipment slot.</p>
+<pre>known, max = C_Engraving.GetNumRunesKnown([equipmentSlot])</pre>
+[...]
+<dd><dl><dt>equipmentSlot</dt>
+<dd><font color="#ecbc2a">number</font><span title="nilable">?</span> - Optional equipment slot index for querying the rune count.</dd></dl></dd>
+[...]
+</div>
+
+## Reasoning:
+Do not add the [ ] to the param_name. The [ ] is used to denote optional parameters. The nilable type is denoted by adding a '?' after the type.
+
+## Output:
+
+default_api.Add_summary_Hint(summary = "Retrieves the number of runes known, optionally for a specified equipment slot.", for_function_signature = "C_Engraving.GetNumRunesKnown(equipmentSlot)")
 
 # Note:
 
@@ -122,14 +335,55 @@ add_param_hint_def = types.FunctionDeclaration(
 
 ## Input (Partial example):
 
+<div id="mw-content-text" class="mw-body-content mw-content-ltr" lang="en" dir="ltr"><div class="mw-parser-output"><div style="float:right; margin-left:1em; margin-left:max(1em, 1.5%); margin-bottom:0.2em;">
+[...]
+<p>Retrieves tag information about the quest.</p>
+<pre>tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, displayTimeLeft = GetQuestTagInfo(questID)</pre>
 [...]
 <dd><dl><dt>questID</dt>
 <dd><font color="#ecbc2a">number</font> - The ID of the quest to retrieve the tag info for.</dd></dl></dd>
 [...]
+<dd><dl><dt>tagID</dt>
+<dd><font color="#ecbc2a">number</font> - the tagID, nil if quest is not tagged</dd>
+<dt>tagName</dt>
+<dd><font color="#ecbc2a">string</font> - human readable representation of the tagID, nil if quest is not tagged</dd>
+<dt>worldQuestType</dt>
+<dd><font color="#ecbc2a">number</font> - type of world quest, or nil if not world quest</dd>
+<dt>rarity</dt>
+<dd><font color="#ecbc2a">number</font> - the rarity of the quest (used for world quests)</dd>
+<dt>isElite</dt>
+<dd><font color="#ecbc2a">boolean</font> - is this an elite quest?  (used for world quests)</dd>
+<dt>tradeskillLineIndex</dt>
+<dd>tradeskillID if this is a profession quest  (used to determine which profession icon to display for world quests)</dd>
+<dt>displayTimeLeft</dt>
+<dd>?</dd></dl></dd>
+[...]
+</div>
 
 ## Output:
 
 default_api.Add_param_Hint(param_name = "questID", param_type = "number", param_description = "The ID of the quest to retrieve the tag info for.", for_function_signature = "GetQuestTagInfo(questID)")
+
+# Example 2:
+
+## Input (Partial example):
+
+<div id="mw-content-text" class="mw-body-content mw-content-ltr" lang="en" dir="ltr"><div class="mw-parser-output">
+[...]
+<p>Retrieves the number of runes known, optionally for a specified equipment slot.</p>
+<pre>known, max = C_Engraving.GetNumRunesKnown([equipmentSlot])</pre>
+[...]
+<dd><dl><dt>equipmentSlot</dt>
+<dd><font color="#ecbc2a">number</font><span title="nilable">?</span> - Optional equipment slot index for querying the rune count.</dd></dl></dd>
+[...]
+</div>
+
+## Reasoning:
+Do not add the [ ] to the param_name. The [ ] is used to denote optional parameters. The nilable type is denoted by adding a '?' after the type.
+
+## Output:
+
+default_api.Add_param_Hint(param_name = "equipmentSlot", param_type = "number?", param_description = "Optional equipment slot index for querying the number of known runes.", for_function_signature = "C_Engraving.GetNumRunesKnown(equipmentSlot)")
 
 # Note:
 
@@ -166,7 +420,16 @@ add_return_hint_def = types.FunctionDeclaration(
 # Example 1:
 
 ## Input (Partial example):
+
+<div id="mw-content-text" class="mw-body-content mw-content-ltr" lang="en" dir="ltr"><div class="mw-parser-output"><div style="float:right; margin-left:1em; margin-left:max(1em, 1.5%); margin-bottom:0.2em;">
 [...]
+<p>Retrieves tag information about the quest.</p>
+<pre>tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, displayTimeLeft = GetQuestTagInfo(questID)</pre>
+[...]
+<dd><dl><dt>questID</dt>
+<dd><font color="#ecbc2a">number</font> - The ID of the quest to retrieve the tag info for.</dd></dl></dd>
+[...]
+<dd><dl><dt>tagID</dt>
 <dd><font color="#ecbc2a">number</font> - the tagID, nil if quest is not tagged</dd>
 <dt>tagName</dt>
 <dd><font color="#ecbc2a">string</font> - human readable representation of the tagID, nil if quest is not tagged</dd>
@@ -179,8 +442,9 @@ add_return_hint_def = types.FunctionDeclaration(
 <dt>tradeskillLineIndex</dt>
 <dd>tradeskillID if this is a profession quest  (used to determine which profession icon to display for world quests)</dd>
 <dt>displayTimeLeft</dt>
-<dd>?</dd>
+<dd>?</dd></dl></dd>
 [...]
+</div>
 
 ## Output:
 
@@ -191,6 +455,60 @@ default_api.Add_return_Hint(return_name = "rarity", return_type = "number", retu
 default_api.Add_return_Hint(return_name = "isElite", return_type = "boolean", return_description = "is this an elite quest?  (used for world quests)", for_function_signature = "GetQuestTagInfo(questID)")
 default_api.Add_return_Hint(return_name = "tradeskillLineIndex", return_type = "unknown", return_description = "tradeskillID if this is a profession quest  (used to determine which profession icon to display for world quests)", for_function_signature = "GetQuestTagInfo(questID)")
 default_api.Add_return_Hint(return_name = "displayTimeLeft", return_type = "unknown", return_description = "?", for_function_signature = "GetQuestTagInfo(questID))
+
+# Example 2:
+
+## Input (Partial example):
+
+[...]
+<dd><dl><dt>"itemLink"</dt>
+<dd><a href="/wiki/ItemLink" title="ItemLink">itemLink</a> - the corresponding item link for that item or</dd></dl></dd>
+<dd>nil, if the index is invalid or there is no active trade skill.</dd>
+[...]
+
+## Reasoning:
+The extra <dd> is a part of the description and should be included in the return_description.
+
+## Output:
+
+default_api.Add_return_Hint(return_name = "itemLink", return_type = "ItemLink", return_description = "the corresponding item link for that item or nil, if the index is invalid or there is no active trade skill.", for_function_signature = "GetCraftItemLink(index)")
+
+# Example 3:
+
+## Input (Partial example):
+
+[...]
+<dd><dl><dt>gem1, gem2, ...</dt>
+<dd>Number - Item ID of the gem(s) socketed within the item in the queried slot.</dd></dl></dd>
+[...]
+
+## Reasoning:
+When there are multiple returns as vararg (gem1, gem2, ...), use ... as name and add "gem1, gem2, ..." to the description to denote the multiple returns
+
+## Output:
+
+default_api.Add_return_Hint(return_name = "...", return_type = "number", return_description = "gem1, gem2, ... - Item ID of the gem(s) socketed within the item in the queried slot.", for_function_signature = "GetInventoryItemGems(invSlot)")
+
+# Example 4:
+
+## Input (Partial example):
+
+<div id="mw-content-text" class="mw-body-content mw-content-ltr" lang="en" dir="ltr"><div class="mw-parser-output">
+[...]
+<p>Retrieves the number of runes known, optionally for a specified equipment slot.</p>
+<pre>known, max = C_Engraving.GetNumRunesKnown([equipmentSlot])</pre>
+[...]
+<dd><dl><dt>equipmentSlot</dt>
+<dd><font color="#ecbc2a">number</font><span title="nilable">?</span> - Optional equipment slot index for querying the rune count.</dd></dl></dd>
+[...]
+</div>
+
+## Reasoning:
+Do not add the [ ] to the param_name. The [ ] is used to denote optional parameters. The nilable type is denoted by adding a '?' after the type.
+
+## Output:
+
+default_api.Add_return_Hint(return_name = "known", return_type = "number", return_description = "number of runes known.", for_function_signature = "C_Engraving.GetNumRunesKnown(equipmentSlot)")
 
 # Note:
 
@@ -341,7 +659,7 @@ for url in dat:
   response = client.models.generate_content(
     model=model,
     # This pure also works, the extra is a second test that was last used.
-    contents=content,
+    contents=f"```html\n{content}\n```\nUsing the examples and data in the system instruction please return the function signature(s) for the HTML data in this message.",
     # contents="# HTML TO PARSE:\n\n" + content + "\n\n\n\n\nNEVER output any duplicate functions.",
     config=types.GenerateContentConfig(
       # This pure also works, the extra is a second test that was last used.
