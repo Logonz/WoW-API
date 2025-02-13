@@ -631,13 +631,25 @@ for filename, urls in filedict.items():
   for url in urls:
     url_to_filename[url] = filename
 
+dat = [
+  # "/wiki/API_C_QuestLog.GetQuestWatchType",
+  # "/wiki/API_C_QuestLog.GetBountySetInfoForMapID",
+  # ? "/wiki/API_GetArenaTeam",
+  # ? "/wiki/API_BNGetFriendInfo",
+  # ? "/wiki/API_BNGetFriendGameAccountInfo",
+  "/wiki/API_GetCraftItemLink",
+  "/wiki/API_C_Engraving.GetNumRunesKnown",
+  "/wiki/API_GetSpellLink",
+  "/wiki/API_GetSpellLossOfControlCooldown",
+  "/wiki/API_IsPassiveSpell",
+  "/wiki/API_IsSpellInRange",
+  "/wiki/API_GetSpellAutocast",
+  "/wiki/API_GetInventoryItemGems",
+  "/wiki/API_AddQuestWatch",
+]
+
 dat = GetData()
 
-# dat = [
-#   # "/wiki/API_C_QuestLog.GetQuestWatchType",
-#   # "/wiki/API_C_QuestLog.GetBountySetInfoForMapID",
-#   "/wiki/API_BNGetFriendInfo",
-# ]
 
 # Use regex to extract the namespaces such as C_QuestLog, C_BattleNet and so on.
 namespaces = []
@@ -651,8 +663,24 @@ tool = types.Tool(
     # Add_function_definition_def,
   ]
 )
+
+
+read_from_file = True
+all_function_signatures = {}
+
+# Read in all_function_signatures from a file
+if os.path.isfile("all_function_signatures.json") and read_from_file:
+  with open("all_function_signatures.json", "r") as f:
+    all_function_signatures = json.load(f)
+
+
 for url in dat:
-  print(count, "/", len(dat), f"Processing {url}")
+  if read_from_file and url in all_function_signatures:
+    print(count, "/", len(dat), f"Skipping https://warcraft.wiki.gg{url}")
+    count += 1
+    continue
+  else:
+    print(count, "/", len(dat), f"Processing https://warcraft.wiki.gg{url}")
   html = GetHTMLContent(url)
   content = extract_content_body(html)
 
@@ -684,20 +712,21 @@ for url in dat:
             "summary": "",
             "params": [],
             "returns": [],
+            "documenation": [f"---[Documentation](https://warcraft.wiki.gg{url})"],
           }
       if func.name == "Add_summary" and func.args:
         for_function_signature = func.args["for_function_signature"]
         summary = func.args["summary"]
-        if len(summary) == 0:
+        if len(summary) != 0:
           summary = "Needs summary."
         function_signatures[for_function_signature]["summary"] = summary
       elif func.name == "Add_param" and func.args:
         for_function_signature = func.args["for_function_signature"]
         param_name = func.args["param_name"]
         param_type = func.args["param_type"]
-        param_description = func.args["param_description"]
+        param_description = func.args.get("param_description", "")
         param_hint = f"---@param {param_name} {param_type}"
-        if len(param_description) == 0:
+        if len(param_description) != 0:
           param_hint += f" - {param_description}"
         function_signatures[for_function_signature]["params"].append(param_hint)
 
@@ -705,9 +734,9 @@ for url in dat:
         for_function_signature = func.args["for_function_signature"]
         return_name = func.args["return_name"]
         return_type = func.args["return_type"]
-        return_description = func.args["return_description"]
+        return_description = func.args.get("return_description", "")
         return_hint = f"---@return {return_type} {return_name}"
-        if len(return_description) == 0:
+        if len(return_description) != 0:
           return_hint += f" - {return_description}"
         function_signatures[for_function_signature]["returns"].append(return_hint)
 
@@ -720,24 +749,40 @@ for url in dat:
       #     }
 
   # print(json.dumps(function_signatures, indent=2))
+  all_function_signatures[url] = function_signatures
 
+  count += 1
+
+for url, function_signatures in all_function_signatures.items():
   functions = {}
   for signature, data in function_signatures.items():
     hint = ""
     if len(function_signatures) > 1:
-      hint += "---! DRAFT - More than one function signature\n"
+      hint += "---! DRAFT - More than one function signature<br>\n"
     if data["summary"]:
-      hint += f"---{data['summary']}\n"
+      hint += f"---{data['summary']}<br>\n"
+    if data["documenation"]:
+      hint += "\n".join(data["documenation"]) + "\n"
     if data["params"]:
-      hint += "\n".join(data["params"]) + "\n"
+      # Multi-line param hints
+      for param in data["params"]:
+        param = param.replace("\n", "<br>\n---")
+        hint += param + "\n"
     if data["returns"]:
-      hint += "\n".join(data["returns"]) + "\n"
+      for ret in data["returns"]:
+        ret = ret.replace("\n", "<br>\n---")
+        hint += ret + "\n"
+      # hint += "\n".join(data["returns"]) + "\n"
     hint += f"function {signature} end"
 
     functions[signature] = hint
     print(hint, "\n")
 
   combined_functions = "\n\n".join(functions.values())
+
+  # In IsPassiveSpell there is a non-breaking-space that does not play well with LuaLS.
+  combined_functions = combined_functions.replace("\xa0", " ")
+
   responseData[url] = combined_functions
 
   matches = re.findall(r"function\W+(C_.*?)\.", combined_functions)
@@ -745,7 +790,9 @@ for url in dat:
   if namespace and namespace not in namespaces:
     namespaces.append(namespace)
 
-  count += 1
+# # Dump all_function_signatures to a file
+# with open("all_function_signatures.json", "w") as f:
+#   json.dump(all_function_signatures, f, indent=2)
 
 for url, content in responseData.items():
   filename = url_to_filename[url]
