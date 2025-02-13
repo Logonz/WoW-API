@@ -216,12 +216,42 @@ args={{'for_function_signature': 'GetSpellLossOfControlCooldown(spellSlot, spell
 [...]
 </div>
 
+## Reasoning:
+Do not add the [ ] to the param_name. The [ ] is used to denote optional parameters. The nilable type is denoted by adding a '?' after the type.
+
 ### Output:
 
 args={{'for_function_signature': 'C_Engraving.GetNumRunesKnown(equipmentSlot)', 'summary': 'Returns the number of runes known and the maximum number of runes available, optionally for a specified equipment slot.'}} name='Add_summary'
 args={{'for_function_signature': 'C_Engraving.GetNumRunesKnown(equipmentSlot)', 'param_description': 'optional equipment slot index.', 'param_name': 'equipmentSlot', 'param_type': 'number?'}} name='Add_param'
 args={{'for_function_signature': 'C_Engraving.GetNumRunesKnown(equipmentSlot)', 'return_description': 'number of runes known.', 'return_name': 'known', 'return_type': 'number'}} name='Add_return'
 args={{'for_function_signature': 'C_Engraving.GetNumRunesKnown(equipmentSlot)', 'return_description': 'maximum number of runes available.', 'return_name': 'max', 'return_type': 'number'}} name='Add_return'
+
+## Example 5:
+
+### Input (Partial example):
+<div class="mw-parser-output"><div style="float:right; margin-left:1em; margin-left:max(1em, 1.5%); margin-bottom:0.2em;">
+[...]
+<p>Adds a quest to the list of quests being watched with an optional time to watch it.
+</p>
+<pre>AddQuestWatch(questIndex [, watchTime])</pre>
+<h2><span class="mw-headline" id="Arguments">Arguments</span></h2>
+<dl><dd><dl><dt>questIndex</dt>
+<dd><font color="#ecbc2a">number</font> - The index of the quest in the quest log.</dd>
+<dt>watchTime</dt>
+<dd><font color="#ecbc2a">number</font> - The amount of time to watch the quest in seconds.</dd></dl></dd></dl>
+<h2><span class="mw-headline" id="Returns">Returns</span></h2>
+<dl><dd>None</dd></dl>
+[...]
+</div>
+
+### Output:
+
+args={{'for_function_signature': 'AddQuestWatch(questIndex)', 'summary': 'Adds a quest to the list of quests being watched with an optional time to watch it.'}} name='Add_summary'
+args={{'for_function_signature': 'AddQuestWatch(questIndex)', 'param_description': 'The index of the quest in the quest log.', 'param_name': 'questIndex', 'param_type': 'number'}} name='Add_param'
+
+args={{'for_function_signature': 'AddQuestWatch(questIndex, watchTime)', 'summary': 'Adds a quest to the list of quests being watched with an optional time to watch it.'}} name='Add_summary'
+args={{'for_function_signature': 'AddQuestWatch(questIndex, watchTime)', 'param_description': 'The index of the quest in the quest log.', 'param_name': 'questIndex', 'param_type': 'number'}} name='Add_param'
+args={{'for_function_signature': 'AddQuestWatch(questIndex, watchTime)', 'param_description': 'The amount of time to watch the quest in seconds.', 'param_name': 'watchTime', 'param_type': 'number'}} name='Add_param'
 
 
 ONLY RESPOND WITH tool_calls
@@ -584,7 +614,12 @@ def GetHTMLContent(url: str) -> str:
 
 def extract_content_body(html: str) -> str:
   soup = BeautifulSoup(html, "html.parser")
+  nomobile = soup.find("div", class_="nomobile")
+  if nomobile:
+    nomobile.decompose()
   content_div = soup.find("div", class_="content-body")
+
+  # Remove the div with class "nomobile" and its contents
   if content_div:
     return str(content_div)
   else:
@@ -646,10 +681,24 @@ dat = [
   "/wiki/API_GetSpellAutocast",
   "/wiki/API_GetInventoryItemGems",
   "/wiki/API_AddQuestWatch",
+  "/wiki/API_GetTalentTreeRoles",  #! Not Fixed, the return type is written in a strange way.
+  "/wiki/API_DoTradeSkill",  #! Not fixed, it uses the parameter name "repeat" which is a reserved keyword in Lua.
+  "/wiki/API_UnitAura",  #! Not fixed, [, filter] is not a valid parameter name. Why isn't this being fixed....
 ]
 
 dat = GetData()
 
+# ? Remove functions that are incorrect in some way
+# GetQuestLogIsAutoComplete - Is redirected to C_QuestLog.GetInfo which is a different function.
+try:
+  dat.remove("/wiki/API_GetQuestLogIsAutoComplete")
+except:
+  pass
+# IsQuestHardWatched - Is redirected to C_QuestLog.GetQuestWatchType which is a different function.
+try:
+  dat.remove("/wiki/API_IsQuestHardWatched")
+except:
+  pass
 
 # Use regex to extract the namespaces such as C_QuestLog, C_BattleNet and so on.
 namespaces = []
@@ -665,7 +714,38 @@ tool = types.Tool(
 )
 
 
-read_from_file = True
+def generate_function_hints(function_signatures) -> str:
+  functions = {}
+  for signature, data in function_signatures.items():
+    hint = ""
+    if len(function_signatures) > 1:
+      hint += "---! DRAFT - More than one function signature<br>\n"
+    if data["summary"]:
+      hint += f"---{data['summary']}<br>\n"
+    if data["documenation"]:
+      hint += "\n".join(data["documenation"]) + "\n"
+    if data["params"]:
+      # Multi-line param hints
+      for param in data["params"]:
+        param = param.replace("\n", "<br>\n---")
+        hint += param + "\n"
+    if data["returns"]:
+      for ret in data["returns"]:
+        ret = ret.replace("\n", "<br>\n---")
+        hint += ret + "\n"
+    hint += f"function {signature} end"
+
+    functions[signature] = hint
+
+  combined_functions = "\n\n".join(functions.values())
+
+  # In IsPassiveSpell there is a non-breaking-space that does not play well with LuaLS.
+  combined_functions = combined_functions.replace("\xa0", " ")
+
+  return combined_functions
+
+
+read_from_file = False
 all_function_signatures = {}
 
 # Read in all_function_signatures from a file
@@ -681,7 +761,13 @@ for url in dat:
     continue
   else:
     print(count, "/", len(dat), f"Processing https://warcraft.wiki.gg{url}")
-  html = GetHTMLContent(url)
+
+  redirected = False
+  html = GetHTMLContent(url + "?redirect=no")
+  if '<span id="redirectsub">Redirect page</span>' in html:
+    print("Redirect page")
+    redirected = True
+    html = GetHTMLContent(url)
   content = extract_content_body(html)
 
   response = client.models.generate_content(
@@ -748,41 +834,39 @@ for url in dat:
       #       "returns": [],
       #     }
 
+  print(generate_function_hints(function_signatures), "\n")
+
   # print(json.dumps(function_signatures, indent=2))
-  all_function_signatures[url] = function_signatures
+  all_function_signatures[url] = {
+    "function_signatures": function_signatures,
+    "redirected": redirected,
+  }
 
   count += 1
 
-for url, function_signatures in all_function_signatures.items():
-  functions = {}
-  for signature, data in function_signatures.items():
-    hint = ""
-    if len(function_signatures) > 1:
-      hint += "---! DRAFT - More than one function signature<br>\n"
-    if data["summary"]:
-      hint += f"---{data['summary']}<br>\n"
-    if data["documenation"]:
-      hint += "\n".join(data["documenation"]) + "\n"
-    if data["params"]:
-      # Multi-line param hints
-      for param in data["params"]:
-        param = param.replace("\n", "<br>\n---")
-        hint += param + "\n"
-    if data["returns"]:
-      for ret in data["returns"]:
-        ret = ret.replace("\n", "<br>\n---")
-        hint += ret + "\n"
-      # hint += "\n".join(data["returns"]) + "\n"
-    hint += f"function {signature} end"
+# # Dump all_function_signatures to a file
+with open("all_function_signatures.json", "w") as f:
+  json.dump(all_function_signatures, f, indent=2)
 
-    functions[signature] = hint
-    print(hint, "\n")
+# TODO: These functions are problematic but solvable.
+# IsUnitOnQuestByQuestID - Redirects to C_QuestLog.IsUnitOnQuest
+# It is however just a copy of https://warcraft.wiki.gg/wiki/API_IsUnitOnQuest
+# But with ID instead of Index
+# ? Idea, just replace the word index with ID across the page, adn IsUnitOnQuest with IsUnitOnQuestByQuestID
+#
+# IsQuestWatched - Redirects to https://warcraft.wiki.gg/wiki/API_C_QuestLog.GetQuestWatchType
+# They are similar but instead of ID it uses Index and returns a boolean instead of a number.
+#
+# GetQuestLogRequiredMoney - Redirects to https://warcraft.wiki.gg/wiki/API_C_QuestLog.GetRequiredMoney
+# The new function takes ID, the old one is unknown
+#
 
-  combined_functions = "\n\n".join(functions.values())
 
-  # In IsPassiveSpell there is a non-breaking-space that does not play well with LuaLS.
-  combined_functions = combined_functions.replace("\xa0", " ")
+for url, function_data in all_function_signatures.items():
+  function_signatures = function_data.get("function_signatures", {})
+  redirected = function_data.get("redirected", False)
 
+  combined_functions = generate_function_hints(function_signatures)
   responseData[url] = combined_functions
 
   matches = re.findall(r"function\W+(C_.*?)\.", combined_functions)
@@ -790,9 +874,6 @@ for url, function_signatures in all_function_signatures.items():
   if namespace and namespace not in namespaces:
     namespaces.append(namespace)
 
-# # Dump all_function_signatures to a file
-# with open("all_function_signatures.json", "w") as f:
-#   json.dump(all_function_signatures, f, indent=2)
 
 for url, content in responseData.items():
   filename = url_to_filename[url]
