@@ -781,7 +781,7 @@ for url in dat:
       # system_instruction=system_prompt,
       system_instruction=system_prompt,
       temperature=0,
-      tools=[tool],
+      tools=[tool]
     ),
   )
 
