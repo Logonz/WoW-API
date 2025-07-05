@@ -2,6 +2,7 @@
 import os
 import argparse
 import shutil
+import re
 
 
 def parse_toc_file(toc_path):
@@ -51,6 +52,21 @@ def adjust_file_entry(entry, version, addon_name):
       return new_entry
   return entry
 
+def create_mixin(file):
+  # Find any line that looks like ^(\w+) = {}$ and replace it with
+  # ---@class \1
+  # \1 = {}
+  with open(file, "r") as f:
+    lines = f.readlines()
+  with open(file, "w") as f:
+    for line in lines:
+      m = re.match(r"^(\w+) = {}", line)
+      if m:
+        f.write(f"---@class {m.group(1)}\n")
+        f.write(line)
+      else:
+        f.write(line)
+
 
 def process_addon_directory(addon_dir, version, source_addons_root, dest_addons_root):
   """
@@ -67,7 +83,7 @@ def process_addon_directory(addon_dir, version, source_addons_root, dest_addons_
   version TOC is used for both roles.
   """
   # List all .toc files in the addon folder.
-  toc_files = [f for f in os.listdir(addon_dir) if f.lower().endswith(".toc")]
+  toc_files: list[str] = [f for f in os.listdir(addon_dir) if f.lower().endswith(".toc")]
   if not toc_files:
     return
 
@@ -103,12 +119,17 @@ def process_addon_directory(addon_dir, version, source_addons_root, dest_addons_
   if base_toc is None and version_toc is not None:
     base_toc = version_toc
 
-  if version_toc is None:
+  # No TOC files found; skip this addon.
+  if version_toc is None and base_toc is None:
     print(f"Version TOC file for version '{version}' not found in {addon_dir}. Skipping this addon.")
     return
 
-  base_toc_path = os.path.join(addon_dir, base_toc)
-  version_toc_path = os.path.join(addon_dir, version_toc)
+  # If only the base toc exists, we use it for all versions.
+  if version_toc is None:
+    version_toc = base_toc
+
+  base_toc_path = os.path.join(addon_dir, base_toc)  # type: ignore
+  version_toc_path = os.path.join(addon_dir, version_toc)  # type: ignore
 
   print(f"\nProcessing addon in folder: {addon_dir}")
   print(f"  Base TOC: {base_toc}")
@@ -135,6 +156,13 @@ def process_addon_directory(addon_dir, version, source_addons_root, dest_addons_
         if normalized in allowed_entries:
           filtered_lines.append(line)
           file_entries.append(normalized)
+          if normalized.lower().endswith(".xml"):
+            # If the file is an XML file, load its contents and add the referenced files.
+            xml_files = load_xml(os.path.join(addon_dir, normalized))
+            for xml_file in xml_files:
+              if xml_file not in allowed_entries:
+                print(f"    Adding XML file: {xml_file}")
+                file_entries.append(xml_file)
         else:
           print(f"  Skipping file entry '{stripped}' in {version_toc_path} (not found in base TOC).")
   except Exception as e:
@@ -162,6 +190,7 @@ def process_addon_directory(addon_dir, version, source_addons_root, dest_addons_
       try:
         shutil.copy2(src_file, dest_file)
         print(f"    Copied: {src_file} -> {dest_file}")
+        create_mixin(dest_file)
       except Exception as e:
         print(f"    Error copying {src_file} to {dest_file}: {e}")
     else:
@@ -187,6 +216,39 @@ def copy_annotations():
       except Exception as e:
         print(f"Error copying annotations folder {src_item} to {dest_item}: {e}")
 
+def load_xml(file_path):
+  """
+  Loads file paths from an XML file containing <Script> tags.
+
+  The XML is expected to include tags like:
+      <Script file="Blizzard_EventTrace.lua"/>
+
+  Args:
+      file_path (str): The path to the XML file, e.g.,
+          ".generate_database_lua/Questie/Localization/Translations/Translations.xml"
+
+  Returns:
+      list: A list of the files referenced in the XML.
+  """
+  files_to_load = []
+
+  # Only process if the file exists.
+  if os.path.exists(file_path):
+    with open(file_path, "r", encoding="utf-8") as f:
+      file_text = f.read()
+
+    # Find all occurrences of <Script ... file="..." using a non-greedy regex.
+    # This pattern matches the value inside the file attribute.
+    matches = re.findall(r'<Script.*?file="(.*?)"', file_text)
+
+    for xml_file in matches:
+      # Replace backslashes with forward slashes for consistency.
+      xml_file = xml_file.replace("\\", "/")
+      # Construct the full path by joining the XML file's directory with the relative path.
+      print("  Loading file:", xml_file)
+      files_to_load.append(xml_file)
+
+  return files_to_load
 
 def main():
   parser = argparse.ArgumentParser(
@@ -218,7 +280,7 @@ def main():
 
   # For each version, create a destination folder under API/<Version> and process each addon.
   for version in versions:
-    dest_addons_root = os.path.join(".", "API", "UI")
+    dest_addons_root = os.path.join(".", "API", "_UI")
     print(f"\n=== Processing destination for version '{version}' at {dest_addons_root} ===")
     for addon in os.listdir(source_addons_root):
       addon_dir = os.path.join(source_addons_root, addon)

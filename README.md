@@ -15,11 +15,14 @@ Look at the list
 Vanilla & Cataclysm to find the missing functions such as "AbandonQuest" which is not under C_QuestLog
 I just copied the list through HTML and created the list in 
 
+---
+OPTIONAL
 It will read the lookup.json file, if you add more functions you need to regenerate the lookup.json file
 
 ```bash
   python Classic-API-Generator.py
 ```
+---
 
 This will then run through the lookup.json file and generate the missing functions using OpenAI
 
@@ -40,7 +43,7 @@ This will then run through the lookup.json file and generate the missing functio
 Create a symlink to your World of Warcraft Addons folder
 
 ```bat
-mklink /J "C:\Games\World of Warcraft\_classic_era_\Interface\AddOns\QuestLite\WoW-API" "D:\Projekt\wow-api-libraries\API-Classic"
+mklink /J "C:\Games\World of Warcraft\_classic_era_\Interface\AddOns\Questie\WoW-API" "D:\Projekt\wow-api-libraries\API-Classic"
 ```
 
 Change the settings in VSCode to exclude the WoW-API folder
