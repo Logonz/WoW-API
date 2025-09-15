@@ -466,7 +466,7 @@ def main():
   # Rename the API folder to the version from args.version
   print(f"\nRenaming API folder to API-{args.version}")
   dest_api = os.path.join(".", "API")
-  dest_version = os.path.join(".", f"API-{args.version}-New")
+  dest_version = os.path.join(".", f"API-{args.version}")
 
   if os.path.isdir(dest_version):
     print(f"Destination folder {dest_version} already exists. Removing directory.")
