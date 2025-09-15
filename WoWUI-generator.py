@@ -52,19 +52,157 @@ def adjust_file_entry(entry, version, addon_name):
       return new_entry
   return entry
 
-def create_mixin(file):
-  # Find any line that looks like ^(\w+) = {}$ and replace it with
-  # ---@class \1
-  # \1 = {}
+
+def create_mixin(file, dest_root):
+  # Extra manual inheritance mapping
+  # Will be appended last on the line
+  extra_class_inheritence = {
+    "MapCanvasMixin": ", Frame",
+    "MapCanvasDetailLayerMixin": " : Frame",
+    "MapCanvasScrollControllerMixin": " : ScrollFrame",  # Scroll container, i assume is a ScrollFrame
+    "MapCanvasPinMixin": " : Button",  # Uses Frame functions, i would assume most icons will be buttons
+  }
+
+  # Lookup table for classes that need extra field annotations
+  class_fields = {
+    "AccountSaveFrameMixin": [
+      "---@field LockEditBox EditBox",
+      "---@field SaveButton UIButtonMixin",
+      "---@field Text FontString",
+      "---@field ContentInsets Frame",
+      "---@field AlertIcon Texture",
+    ],
+    "MapCanvasMixin": [
+      "---@field ScrollContainer MapCanvasScrollControllerMixin",
+      "---@field BorderFrame Frame|unknown",
+      "---@diagnostic disable: param-type-mismatch",  # There is a bug in the code we want to ignore
+    ],
+    "MapCanvasDataProviderMixin": [
+      "---@field owningMap MapCanvasMixin",
+    ],
+    "MapCanvasScrollControllerMixin": [
+      "---@field Child Frame|unknown ScrollChild",
+      "---@field GetMap fun(): MapCanvasMixin",
+    ],
+    "MapCanvasPinMixin": [
+      "---@field owningMap MapCanvasMixin",
+    ],
+    # Add more classes and their fields here:
+    # "AnotherMixin": [
+    #   "---@field SomeField SomeType",
+    #   "---@field AnotherField AnotherType"
+    # ]
+  }
+
+  # Configuration for different patterns and their behaviors
+  pattern_configs = [
+    {
+      "regex": r"^([_A-Z]{3,100}) = {}",
+      "action": "markdown",
+      "group_index": 1,
+    },
+    {
+      # These use <FrameType>Mixin in their name, so we can use
+      "regex": r"^(\w+(Button|ColorSelect|Cooldown|EditBox|FogOfWarFrame|Frame|GameTooltip|MessageFrame|Minimap|ModelScene|ModelSceneActor|MovieFrame|ScrollFrame|SimpleHTML|Slider|StatusBar|UnitPositionFrame)Mixin) = {\s*}",
+      "action": "template",
+      "output_string": "---@class {0} : {1}",
+      "group_index": [1, 2],
+    },
+    {
+      "regex": r"^(\w+(Button|ColorSelect|Cooldown|EditBox|FogOfWarFrame|Frame|GameTooltip|MessageFrame|Minimap|ModelScene|ModelSceneActor|MovieFrame|ScrollFrame|SimpleHTML|Slider|StatusBar|UnitPositionFrame)Mixin) *= *CreateFromMixins\(([^)]+)\);",
+      # "regex": r"^(\w+ButtonMixin)\s*=\s*CreateFromMixins\(([^)]+)\);",
+      "action": "template",
+      # "output_string": "---@class {0} : Button, {1}",
+      "output_string": "---@class {0} : {1}, {2}",
+      "group_index": [1, 2, 3],  # LHS, RHS
+    },
+    {
+      "regex": r"^(\w+) *= *CreateFromMixins\(([^)]+)\);",
+      "action": "template",
+      "output_string": "---@class {0} : {1}",
+      "group_index": [1, 2],  # LHS, RHS
+    },
+    {
+      "regex": r"^(\w+) = (\w+):CreateSubPin\(",
+      "action": "template",
+      "output_string": "---@class {0} : {1}",
+      "group_index": [1, 2],  # [child_class, parent_class]
+    },
+    {
+      "regex": r"^local (\w+) = {\s*}",
+      "action": "template",
+      "output_string": "---@class {0}",
+      "group_index": [1],
+    },
+    {
+      "regex": r"^(\w+) *= *{\s*}",
+      "action": "template",
+      "output_string": "---@class {0}",
+      "group_index": [1],
+    },
+    {
+      # Match multi-line table assignments
+      "regex": r"^(\w+) *= *{*$",
+      "action": "template",
+      "output_string": "---@class {0}",
+      "group_index": [1],
+    },
+    # Add more patterns here as needed:
+    # {
+    #   "regex": r"^(\w+) = (\w+):SomeMethod\(",
+    #   "action": "template",
+    #   "output_string": "---@class {0} : {1}",
+    #   "group_index": [1, 2]
+    # }
+    # ? Always leave this last
+    {
+      "regex": r"^(\w+Mixin) =",
+      "action": "markdown",
+      "group_index": 1,
+    },
+  ]
+
   with open(file, "r") as f:
     lines = f.readlines()
+
   with open(file, "w") as f:
     for line in lines:
-      m = re.match(r"^(\w+) = {}", line)
-      if m:
-        f.write(f"---@class {m.group(1)}\n")
-        f.write(line)
-      else:
+      matched = False
+
+      for config in pattern_configs:
+        m = re.match(config["regex"], line)
+        if m:
+          if config["action"] == "template":
+            groups = [m.group(i) for i in config["group_index"]]
+            annotation = config["output_string"].format(*groups)
+
+            class_name = groups[0]  # First group is always the class name
+            if class_name in extra_class_inheritence:
+              extra_class = extra_class_inheritence[class_name]
+              annotation += extra_class
+
+            f.write(f"{annotation}\n")
+
+            # Check if this class has extra fields to inject
+            if class_name in class_fields:
+              for field in class_fields[class_name]:
+                f.write(f"{field}\n")
+
+            f.write(line)
+          elif config["action"] == "markdown":
+            if isinstance(config["group_index"], list):
+              class_name = m.group(config["group_index"][0])
+            else:
+              class_name = m.group(config["group_index"])
+            potential_classes_file = os.path.join(dest_root, "potential_classes.md")
+            with open(potential_classes_file, "a", encoding="utf-8") as md_file:
+              md_file.write(f"- {class_name}\n")
+            f.write(line)  # Write original line without annotation
+
+          matched = True
+          break
+
+      if not matched:
         f.write(line)
 
 
@@ -190,7 +328,7 @@ def process_addon_directory(addon_dir, version, source_addons_root, dest_addons_
       try:
         shutil.copy2(src_file, dest_file)
         print(f"    Copied: {src_file} -> {dest_file}")
-        create_mixin(dest_file)
+        create_mixin(dest_file, dest_addons_root)
       except Exception as e:
         print(f"    Error copying {src_file} to {dest_file}: {e}")
     else:
@@ -215,6 +353,7 @@ def copy_annotations():
         print(f"Copied annotations folder: {src_item} -> {dest_item}")
       except Exception as e:
         print(f"Error copying annotations folder {src_item} to {dest_item}: {e}")
+
 
 def load_xml(file_path):
   """
@@ -241,14 +380,45 @@ def load_xml(file_path):
     # This pattern matches the value inside the file attribute.
     matches = re.findall(r'<Script.*?file="(.*?)"', file_text)
 
+    # Get the directory of the XML file to resolve relative paths
+    xml_dir = os.path.dirname(file_path)
+
     for xml_file in matches:
       # Replace backslashes with forward slashes for consistency.
       xml_file = xml_file.replace("\\", "/")
-      # Construct the full path by joining the XML file's directory with the relative path.
-      print("  Loading file:", xml_file)
-      files_to_load.append(xml_file)
+
+      # Resolve the absolute path of the referenced file
+      absolute_path = os.path.join(xml_dir, xml_file)
+      normalized_path = os.path.normpath(absolute_path)
+
+      # Convert back to relative path from the addon directory
+      # We need to find the addon root (should be 3 levels up from Interface/AddOns/AddonName/)
+      try:
+        # Find the AddOns directory in the path
+        path_parts = normalized_path.split(os.sep)
+        addons_index = None
+        for i, part in enumerate(path_parts):
+          if part == "AddOns":
+            addons_index = i
+            break
+
+        if addons_index is not None and addons_index + 2 < len(path_parts):
+          # Extract just the relative path from the addon directory
+          addon_relative_path = os.path.join(*path_parts[addons_index + 2 :])
+          addon_relative_path = addon_relative_path.replace("\\", "/")
+          print("  Loading file:", addon_relative_path)
+          files_to_load.append(addon_relative_path)
+        else:
+          # Fallback: use the original path if we can't parse it properly
+          print("  Loading file (fallback):", xml_file)
+          files_to_load.append(xml_file)
+      except Exception as e:
+        print(f"  Error processing XML file path {xml_file}: {e}")
+        # Fallback: use the original path
+        files_to_load.append(xml_file)
 
   return files_to_load
+
 
 def main():
   parser = argparse.ArgumentParser(
@@ -270,7 +440,7 @@ def main():
   if "Classic" in versions and "Vanilla" not in versions:
     versions.append("Vanilla")
 
-  print(f"Processing versions: {', '.join(versions)}")
+  print(f"Processing versions: {', '.join(versions)}")  # type: ignore
 
   # Define the source AddOns folder.
   source_addons_root = os.path.join(".", "WoWUI", "Interface", "AddOns")
@@ -294,7 +464,7 @@ def main():
   # Rename the API folder to the version from args.version
   print(f"\nRenaming API folder to API-{args.version}")
   dest_api = os.path.join(".", "API")
-  dest_version = os.path.join(".", f"API-{args.version}")
+  dest_version = os.path.join(".", f"API-{args.version}-New")
 
   if os.path.isdir(dest_version):
     print(f"Destination folder {dest_version} already exists. Removing directory.")
@@ -310,6 +480,31 @@ def main():
     print("Copying Functions-Classic-AI folder into API folder")
     dest = os.path.join(dest_version, "Functions-AI")
     shutil.copytree(dest_functions, dest, dirs_exist_ok=True)
+
+  # Create .vscode/settings.json in the output directory
+  print("\nCreating .vscode/settings.json in output directory")
+  vscode_dir = os.path.join(dest_version, ".vscode")
+  os.makedirs(vscode_dir, exist_ok=True)
+
+  settings_content = """{
+  "Lua.diagnostics.disable": [
+    "undefined-global",
+    "redundant-parameter",
+    "unbalanced-assignments",
+    "missing-parameter",
+    "lowercase-global",
+    "ambiguity-1",
+    "deprecated",
+    "duplicate-doc-field",
+    "duplicate-doc-alias",
+    "return-type-mismatch",
+  ]
+}"""
+
+  settings_path = os.path.join(vscode_dir, "settings.json")
+  with open(settings_path, "w", encoding="utf-8") as f:
+    f.write(settings_content)
+  print(f"Created VS Code settings file: {settings_path}")
 
 
 if __name__ == "__main__":
