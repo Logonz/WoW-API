@@ -166,6 +166,8 @@ def create_mixin(file, dest_root):
     lines = f.readlines()
 
   with open(file, "w") as f:
+    f.write("-- Auto-generated LuaLS Annotations, do not edit manually\n")
+    f.write("---@meta _\n")
     for line in lines:
       matched = False
 
