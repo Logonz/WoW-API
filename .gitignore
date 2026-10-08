@@ -1,0 +1,8 @@
+# Generated output: library/ (LuaLS) and reference/ (markdown), rebuilt by `uv run generate.py`
+WoW-API/
+# Fetched inputs, rebuilt by `uv run wiki_dump.py` and `uv run generate.py sources`
+dump/
+sources/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
